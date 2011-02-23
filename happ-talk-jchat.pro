@@ -17,3 +17,6 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui \
     about.ui
+
+OTHER_FILES += \
+    README.txt
