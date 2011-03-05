@@ -4,19 +4,32 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui svg
 
 TARGET = happ-talk-jchat
 TEMPLATE = app
 
+LIBS += -lgloox
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp \
+    mainwindow.cpp \
+    imwidget.cpp \
+    configdialog.cpp \
+    aboutdialog.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += \
+    mainwindow.h \
+    imwidget.h \
+    configdialog.h \
+    aboutdialog.h
 
-FORMS    += mainwindow.ui \
-    about.ui
+FORMS    += \
+    mainwindow.ui \
+    imwidget.ui \
+    configdialog.ui
 
 OTHER_FILES += \
     README.txt
+
+RESOURCES += \
+    resources.qrc

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/desktop.svg</file>
+        <file>images/help.svg</file>
+        <file>images/logo.svg</file>
+        <file>images/office.svg</file>
+        <file>images/photocam.svg</file>
+        <file>images/preferences.svg</file>
+        <file>images/transfer.svg</file>
+        <file>images/users.svg</file>
+        <file>images/web.svg</file>
+        <file>images/write.svg</file>
+    </qresource>
+</RCC>
