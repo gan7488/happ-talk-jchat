@@ -12,21 +12,22 @@ TEMPLATE = app
 LIBS += -lgloox
 
 SOURCES += main.cpp \
+    aboutdialog.cpp \
     mainwindow.cpp \
+    imwindow.cpp \
     imwidget.cpp \
-    configdialog.cpp \
-    aboutdialog.cpp
+    roomwidget.cpp \
+    roomconfigwidget.cpp
 
 HEADERS  += \
+    aboutdialog.h \
     mainwindow.h \
+    imwindow.h \
     imwidget.h \
-    configdialog.h \
-    aboutdialog.h
+    roomwidget.h \
+    roomconfigwidget.h
 
-FORMS    += \
-    mainwindow.ui \
-    imwidget.ui \
-    configdialog.ui
+FORMS    +=
 
 OTHER_FILES += \
     README.txt
