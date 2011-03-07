@@ -1,0 +1,5 @@
+/* empty stylesheet */
+AboutDialog QTextEdit { background-color: rgba(0,0,0,0); border: none; }
+QTextEdit { background-color: rgba(10,200,30,200);}
+QTabWidget { margin: 5px; padding: 5px; }
+QTabWidget#mainTabs::tab-bar { alignment: left; }
