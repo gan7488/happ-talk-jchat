@@ -21,6 +21,7 @@ MainDialog::MainDialog(QWidget *parent) :
     layoutElements();
     createWindows();
     createMenus();
+    client = new JClient();
 }
 
 MainDialog::~MainDialog()
@@ -125,6 +126,11 @@ void MainDialog::exitActTriggered()
 
 void MainDialog::showEvent(QShowEvent *e)
 {
-    login->show();
+    int ret = login->exec();
+    if (ret == QDialog::Accepted)
+    {
+        JID jid(login->getAccount().toStdString());
+        client->connect(jid, login->getPassword());
+    }
 }
 

@@ -28,6 +28,10 @@ void LoginDialog::createElements()
     buttonBox->addButton(tr("Login"), QDialogButtonBox::AcceptRole);
     buttonBox->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
     buttonBox->addButton(tr("Join"), QDialogButtonBox::HelpRole);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejected()));
+    connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(join()));
 }
 
 void LoginDialog::layoutElements()
@@ -46,15 +50,25 @@ void LoginDialog::layoutElements()
 
 void LoginDialog::accepted()
 {
-
+    this->accept();
 }
 
 void LoginDialog::rejected()
 {
-
+    this->reject();
 }
 
 void LoginDialog::join()
 {
-
+    QMessageBox::information(this, "REGISTER FROM!", "DO IT", QMessageBox::Ok, QMessageBox::Cancel);
 }
+
+QString LoginDialog::getAccount() const
+{
+    return account->toPlainText();
+}
+QString LoginDialog::getPassword() const
+{
+    return password->toPlainText();
+}
+

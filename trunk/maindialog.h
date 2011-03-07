@@ -6,6 +6,7 @@
 #define MAINDIALOG_H
 
 #include <QDialog>
+#include "jclient.h"
 
 class QMenu;
 class QTreeView;
@@ -51,6 +52,8 @@ private:
 
     QMenu *menu;
     QAction *exitAct;
+
+    JClient *client;
 
 private slots:
     void topClicked();

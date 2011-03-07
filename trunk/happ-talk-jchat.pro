@@ -2,7 +2,7 @@ QT       += core gui svg
 
 TARGET = happ-talk-jchat
 TEMPLATE = app
-#LIBS += -lgloox
+LIBS += -lgloox
 
 SOURCES += main.cpp \
     maindialog.cpp \
@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     generalconfigwidget.cpp \
     chatconfigwidget.cpp \
     proxyconfigwidget.cpp \
-    logindialog.cpp
+    logindialog.cpp \
+    jclient.cpp
 
 HEADERS  += \
     maindialog.h \
@@ -28,7 +29,8 @@ HEADERS  += \
     generalconfigwidget.h \
     chatconfigwidget.h \
     proxyconfigwidget.h \
-    logindialog.h
+    logindialog.h \
+    jclient.h
 
 OTHER_FILES += \
     readme.txt
