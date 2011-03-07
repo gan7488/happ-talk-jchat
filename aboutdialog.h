@@ -7,9 +7,9 @@
 
 #include <QDialog>
 
-class QTextEdit;
 class QDialogButtonBox;
 class QSvgWidget;
+class QTextEdit;
 
 class AboutDialog : public QDialog
 {
@@ -19,17 +19,15 @@ public:
 
 private:
     void createElements();
+    void layoutElements();
     void fillContent();
 
-private slots:
-    void accepted();
-    void helpRequested();
-
-private:
-    QTextEdit *text;
     QDialogButtonBox *buttonBox;
     QSvgWidget *logo;
+    QTextEdit *about;
 
+private slots:
+    void helpRequested();
 };
 
 #endif // ABOUTDIALOG_H

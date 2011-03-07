@@ -9,15 +9,16 @@
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent)
 {
-    this->setFixedSize(600, 300);
+    this->setFixedSize(400, 200);
     createElements();
+    layoutElements();
     fillContent();
 }
 
 void AboutDialog::createElements()
 {
-    text = new QTextEdit();
-    text->setReadOnly(true);
+    about = new QTextEdit();
+    about->setReadOnly(true);
 
     buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(tr("Help"), QDialogButtonBox::HelpRole);
@@ -27,13 +28,15 @@ void AboutDialog::createElements()
     connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
 
     logo = new QSvgWidget();
-    logo->setFixedSize(190,200);
-    //TODO FROM RESOURCES
-    logo->load(QString("images/logo.svg"));
+    logo->setFixedSize(130,150);
+    logo->load(QString(":/images/logo.svg"));
+}
 
+void AboutDialog::layoutElements()
+{
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(logo);
-    hLayout->addWidget(text);
+    hLayout->addWidget(about);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(hLayout);
@@ -44,17 +47,23 @@ void AboutDialog::createElements()
 
 void AboutDialog::fillContent()
 {
-    //TODO HERE
-    text->setHtml("<h3>Jchat</h3><h4>Author: Svirskiy Sergey</h4>"
-                  "Additional information: blah blah blah");
-}
-
-void AboutDialog::accepted()
-{
-    this->accept();
+    this->setWindowTitle(tr("About programm"));
+    about->setHtml(tr("<h2>Jchat #0 alfa</h2>"
+                      "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
+                      "Jchat is written in C++ using Qt. "
+                      "Jchat is released, and may be modified and redistributed,  "
+                      "under the terms of the Lesser GPL.  "
+                      "A copy of the GPL is distributed with Jchat.  "
+                      "There is no warranty for Jchat.</p>"
+                      "<h3>Authors:</h3>"
+                      "<ul style='font-size: 12px;'><li>Svirskiy Sergey</li></ul>"
+                      "<h3>Testers:</h3>"
+                      "<ul style='font-size: 12px;'><li>DEg</li>"
+                      "<li>Un1c0rn</li>"
+                      "<li>Denzel</li></ul>"));
 }
 
 void AboutDialog::helpRequested()
 {
-    //TODO HERE
+    QDesktopServices::openUrl(QUrl("http://code.google.com/p/happ-talk-jchat/"));
 }
