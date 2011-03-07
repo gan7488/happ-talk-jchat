@@ -9,16 +9,30 @@
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent)
 {
+    this->setWindowTitle(tr("About programm"));
     this->setFixedSize(400, 200);
+
     createElements();
     layoutElements();
-    fillContent();
 }
 
 void AboutDialog::createElements()
 {
     about = new QTextEdit();
     about->setReadOnly(true);
+    about->setHtml(tr("<h2>Jchat #0 alfa</h2>"
+                       "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
+                       "Jchat is written in C++ using Qt. "
+                       "Jchat is released, and may be modified and redistributed,  "
+                       "under the terms of the Lesser GPL.  "
+                       "A copy of the GPL is distributed with Jchat.  "
+                       "There is no warranty for Jchat.</p>"
+                       "<h3>Authors:</h3>"
+                       "<ul style='font-size: 12px;'><li>Svirskiy Sergey</li></ul>"
+                       "<h3>Testers:</h3>"
+                       "<ul style='font-size: 12px;'><li>DEg</li>"
+                       "<li>Un1c0rn</li>"
+                       "<li>Denzel</li></ul>"));
 
     buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(tr("Help"), QDialogButtonBox::HelpRole);
@@ -38,29 +52,12 @@ void AboutDialog::layoutElements()
     hLayout->addWidget(logo);
     hLayout->addWidget(about);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(hLayout);
-    layout->addWidget(buttonBox);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(hLayout);
+    vLayout->addSpacing(10);
+    vLayout->addWidget(buttonBox);
 
-    setLayout(layout);
-}
-
-void AboutDialog::fillContent()
-{
-    this->setWindowTitle(tr("About programm"));
-    about->setHtml(tr("<h2>Jchat #0 alfa</h2>"
-                      "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
-                      "Jchat is written in C++ using Qt. "
-                      "Jchat is released, and may be modified and redistributed,  "
-                      "under the terms of the Lesser GPL.  "
-                      "A copy of the GPL is distributed with Jchat.  "
-                      "There is no warranty for Jchat.</p>"
-                      "<h3>Authors:</h3>"
-                      "<ul style='font-size: 12px;'><li>Svirskiy Sergey</li></ul>"
-                      "<h3>Testers:</h3>"
-                      "<ul style='font-size: 12px;'><li>DEg</li>"
-                      "<li>Un1c0rn</li>"
-                      "<li>Denzel</li></ul>"));
+    setLayout(vLayout);
 }
 
 void AboutDialog::helpRequested()

@@ -3,33 +3,13 @@
 ******************************************************************************/
 
 #include <QtGui/QApplication>
-#include "mainwindow.h"
+#include "maindialog.h"
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(resources);
-
     QApplication a(argc, argv);
-    MainWindow w;
+    MainDialog w;
     w.show();
 
     return a.exec();
 }
-
-/*
-HOWTO: Styles
-
-    QFile file(":/qss/" + sheetName.toLower() + ".qss");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-
-    ui.styleTextEdit->setPlainText(styleSheet);
-    qApp->setStyleSheet(styleSheet);
-*/
-
-/*
- HOWTO: Langs
-QTranslator translator;
-     translator.load(QString("arrowpad_") + locale);
-     app.installTranslator(&translator);
-*/

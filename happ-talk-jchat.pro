@@ -1,42 +1,31 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2011-02-22T17:27:47
-#
-#-------------------------------------------------
-
 QT       += core gui svg
 
 TARGET = happ-talk-jchat
 TEMPLATE = app
-
 #LIBS += -lgloox
 
 SOURCES += main.cpp \
+    maindialog.cpp \
     aboutdialog.cpp \
-    mainwindow.cpp \
-    imwindow.cpp \
-    imwidget.cpp \
-    roomwidget.cpp \
-    roomconfigwidget.cpp \
-    settings.cpp \
-    userinfowidget.cpp \
-    roominfowidget.cpp
+    configdialog.cpp \
+    talksdialog.cpp \
+    chatwidget.cpp \
+    talkerinfowidget.cpp \
+    roominfowidget.cpp \
+    talkwidget.cpp
 
 HEADERS  += \
+    maindialog.h \
     aboutdialog.h \
-    mainwindow.h \
-    imwindow.h \
-    imwidget.h \
-    roomwidget.h \
-    roomconfigwidget.h \
-    settings.h \
-    userinfowidget.h \
-    roominfowidget.h
-
-FORMS    +=
+    configdialog.h \
+    talksdialog.h \
+    chatwidget.h \
+    talkerinfowidget.h \
+    roominfowidget.h \
+    talkwidget.h
 
 OTHER_FILES += \
-    README.txt
+    readme.txt
 
 RESOURCES += \
     resources.qrc

@@ -10,5 +10,6 @@
         <file>images/users.svg</file>
         <file>images/web.svg</file>
         <file>images/write.svg</file>
+        <file>styles/default.qss</file>
     </qresource>
 </RCC>
