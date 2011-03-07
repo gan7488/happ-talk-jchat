@@ -3,6 +3,9 @@
 ******************************************************************************/
 
 #include "configdialog.h"
+#include "generalconfigwidget.h"
+#include "chatconfigwidget.h"
+#include "proxyconfigwidget.h"
 #include <QtGui>
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
@@ -20,11 +23,13 @@ void ConfigDialog::createTabs()
     tabs = new QTabWidget();
 
     //TODO
-    tabs->addTab(new QLabel(), "ladg dfgd dsla");
-    tabs->addTab(new QLabel(), " pi pbvxc ,m.   w ,cvb");
-    tabs->addTab(new QLabel(), "45bhsd gf df s asg dfsg d ");
-    tabs->addTab(new QLabel(), "45bhsd gf df s asg dfsg d ");
-    tabs->addTab(new QLabel(), "45bhsd gf df s asg dfsg d ");
+    generalConf = new GeneralConfigWidget();
+    chatConf = new ChatConfigWidget();
+    proxyConf = new ProxyConfigWidget();
+
+    tabs->addTab(generalConf, tr("General"));
+    tabs->addTab(chatConf, tr("Chat"));
+    tabs->addTab(proxyConf, tr("Proxy"));
 }
 
 void ConfigDialog::createButtons()

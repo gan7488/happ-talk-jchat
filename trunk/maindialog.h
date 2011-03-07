@@ -11,6 +11,7 @@ class QMenu;
 class QTreeView;
 class QPushButton;
 
+class LoginDialog;
 class AboutDialog;
 class ConfigDialog;
 class TalksDialog;
@@ -26,6 +27,9 @@ signals:
 
 public slots:
 
+protected:
+    void showEvent(QShowEvent *e);
+
 private:
     void createTree();
     void createButtons();
@@ -33,6 +37,7 @@ private:
     void createWindows();
     void layoutElements();
 
+    LoginDialog *login;
     AboutDialog *about;
     ConfigDialog *config;
     TalksDialog *talks;

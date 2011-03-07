@@ -9,6 +9,9 @@
 
 class QDialogButtonBox;
 class QTabWidget;
+class GeneralConfigWidget;
+class ChatConfigWidget;
+class ProxyConfigWidget;
 
 class ConfigDialog : public QDialog
 {
@@ -27,6 +30,10 @@ private:
 
     QDialogButtonBox *buttonBox;
     QTabWidget *tabs;
+
+    GeneralConfigWidget *generalConf;
+    ChatConfigWidget *chatConf;
+    ProxyConfigWidget *proxyConf;
 
 private slots:
     void accepted();

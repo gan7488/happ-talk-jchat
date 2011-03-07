@@ -6,6 +6,7 @@
 #include "aboutdialog.h"
 #include "talksdialog.h"
 #include "configdialog.h"
+#include "logindialog.h"
 
 #include <QtGui>
 
@@ -27,6 +28,7 @@ MainDialog::~MainDialog()
     delete about;
     delete config;
     delete talks;
+    delete login;
 }
 
 void MainDialog::createTree()
@@ -74,6 +76,7 @@ void MainDialog::createWindows()
     about = new AboutDialog();
     config = new ConfigDialog();
     talks = new TalksDialog();
+    login = new LoginDialog();
 }
 
 void MainDialog::layoutElements()
@@ -119,3 +122,9 @@ void MainDialog::exitActTriggered()
 {
     this->close();
 }
+
+void MainDialog::showEvent(QShowEvent *e)
+{
+    login->show();
+}
+

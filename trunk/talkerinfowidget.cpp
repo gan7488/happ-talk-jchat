@@ -7,4 +7,5 @@
 TalkerInfoWidget::TalkerInfoWidget(QWidget *parent) :
     QWidget(parent)
 {
+
 }
