@@ -9,7 +9,7 @@ QT       += core gui svg
 TARGET = happ-talk-jchat
 TEMPLATE = app
 
-LIBS += -lgloox
+#LIBS += -lgloox
 
 SOURCES += main.cpp \
     aboutdialog.cpp \
@@ -17,7 +17,10 @@ SOURCES += main.cpp \
     imwindow.cpp \
     imwidget.cpp \
     roomwidget.cpp \
-    roomconfigwidget.cpp
+    roomconfigwidget.cpp \
+    settings.cpp \
+    userinfowidget.cpp \
+    roominfowidget.cpp
 
 HEADERS  += \
     aboutdialog.h \
@@ -25,7 +28,10 @@ HEADERS  += \
     imwindow.h \
     imwidget.h \
     roomwidget.h \
-    roomconfigwidget.h
+    roomconfigwidget.h \
+    settings.h \
+    userinfowidget.h \
+    roominfowidget.h
 
 FORMS    +=
 

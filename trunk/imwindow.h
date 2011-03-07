@@ -7,15 +7,27 @@
 
 #include <QMainWindow>
 
+class QTabWidget;
+
 class IMWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit IMWindow(QObject *parent = 0);
+    explicit IMWindow(QWidget *parent = 0);
 
 signals:
 
 public slots:
+
+private:
+    void createTabs();
+
+    QTabWidget *mainTabs;
+    QTabWidget *roomTabs;
+    QTabWidget *imTabs;
+    QTabWidget *advancedTabs;
+
+private slots:
 
 };
 
