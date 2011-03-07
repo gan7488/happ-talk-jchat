@@ -2,16 +2,16 @@
 **	Author: Svirskiy Sergey			Nickname: Happ
 ******************************************************************************/
 
-#ifndef CHATWIDGET_H
-#define CHATWIDGET_H
+#ifndef PROXYCONFIGWIDGET_H
+#define PROXYCONFIGWIDGET_H
 
 #include <QWidget>
 
-class ChatWidget : public QWidget
+class ProxyConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ChatWidget(QWidget *parent = 0);
+    explicit ProxyConfigWidget(QWidget *parent = 0);
 
 signals:
 
@@ -19,4 +19,4 @@ public slots:
 
 };
 
-#endif // CHATWIDGET_H
+#endif // PROXYCONFIGWIDGET_H

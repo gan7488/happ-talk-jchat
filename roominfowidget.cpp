@@ -7,4 +7,5 @@
 RoomInfoWidget::RoomInfoWidget(QWidget *parent) :
     QWidget(parent)
 {
+
 }

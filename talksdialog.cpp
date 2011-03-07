@@ -3,6 +3,9 @@
 ******************************************************************************/
 
 #include "talksdialog.h"
+#include "talkwidget.h"
+#include "talkerinfowidget.h"
+#include "roominfowidget.h"
 #include <QtGui>
 
 TalksDialog::TalksDialog(QWidget *parent) :
@@ -35,6 +38,17 @@ void TalksDialog::createTabs()
     tabs->addTab(rooms, tr("Rooms"));
     tabs->addTab(chats, tr("Chats"));
     tabs->addTab(advanced, tr("Advanced"));
+
+    RoomInfoWidget *info = new RoomInfoWidget();
+    info->setVisible(false);
+    rooms->addTab(new TalkWidget(), "Test 0");
+    rooms->addTab(new TalkWidget(0, info), "Test 1");
+    rooms->addTab(new TalkWidget(0, new RoomInfoWidget()), "Test 2");
+    rooms->addTab(new TalkWidget(0, new RoomInfoWidget()), "Test 3");
+
+    chats->addTab(new TalkWidget(0, new TalkerInfoWidget()), "IM 1");
+    chats->addTab(new TalkWidget(0, new TalkerInfoWidget()), "IM 2");
+    chats->addTab(new TalkWidget(0, new TalkerInfoWidget()), "IM 3");
 }
 
 void TalksDialog::layoutElements()

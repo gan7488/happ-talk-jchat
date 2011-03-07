@@ -9,20 +9,26 @@ SOURCES += main.cpp \
     aboutdialog.cpp \
     configdialog.cpp \
     talksdialog.cpp \
-    chatwidget.cpp \
     talkerinfowidget.cpp \
+    talkwidget.cpp \
     roominfowidget.cpp \
-    talkwidget.cpp
+    generalconfigwidget.cpp \
+    chatconfigwidget.cpp \
+    proxyconfigwidget.cpp \
+    logindialog.cpp
 
 HEADERS  += \
     maindialog.h \
     aboutdialog.h \
     configdialog.h \
     talksdialog.h \
-    chatwidget.h \
     talkerinfowidget.h \
+    talkwidget.h \
     roominfowidget.h \
-    talkwidget.h
+    generalconfigwidget.h \
+    chatconfigwidget.h \
+    proxyconfigwidget.h \
+    logindialog.h
 
 OTHER_FILES += \
     readme.txt
