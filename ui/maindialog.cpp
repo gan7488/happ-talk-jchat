@@ -7,8 +7,10 @@
 #include "talksdialog.h"
 #include "configdialog.h"
 #include "logindialog.h"
+#include "xmpp/jclient.h"
 
 #include <QtGui>
+#include <QSystemTrayIcon>
 
 MainDialog::MainDialog(QWidget *parent) :
     QDialog(parent)
@@ -16,11 +18,15 @@ MainDialog::MainDialog(QWidget *parent) :
     this->setMinimumSize(250, 400);
     this->setMaximumWidth(400);
     this->setWindowTitle(tr("Jchat : Talkers"));
+    this->setWindowIcon(QIcon(":/images/logo.svg"));
     createTree();
     createButtons();
     layoutElements();
     createWindows();
+    createActions();
     createMenus();
+    createTrayIcon();
+    trayIcon->setVisible(true);
     client = new JClient();
 }
 
@@ -30,6 +36,17 @@ MainDialog::~MainDialog()
     delete config;
     delete talks;
     delete login;
+}
+
+void MainDialog::showhide()
+{
+    setVisible(!isVisible());
+}
+
+void MainDialog::closeEvent(QCloseEvent *event)
+{
+    hide();
+    event->ignore();
 }
 
 void MainDialog::createTree()
@@ -52,22 +69,22 @@ void MainDialog::createButtons()
     connect(left, SIGNAL(clicked()), this, SLOT(leftClicked()));
 }
 
+void MainDialog::createActions()
+{
+    showhideAction = new QAction(tr("Show / Hide"), this);
+    connect(showhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
+
+    quitAction = new QAction(tr("Quit"), this);
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(quitActionTriggered()));
+}
+
 void MainDialog::createMenus()
 {
-    menu = new QMenu();
+    menu = new QMenu(this);
 
-    menu->addAction("1");
-    menu->addAction("2");
-    menu->addAction("3");
-    menu->addAction("4");
+    menu->addAction(showhideAction);
     menu->addSeparator();
-    menu->addAction("1");
-    menu->addAction("2");
-    menu->addAction("3");
-    menu->addAction("4");
-    menu->addSeparator();
-    exitAct = menu->addAction(tr("Exit"));
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(exitActTriggered()));
+    menu->addAction(quitAction);
 
     left->setMenu(menu);
 }
@@ -78,6 +95,24 @@ void MainDialog::createWindows()
     config = new ConfigDialog();
     talks = new TalksDialog();
     login = new LoginDialog();
+}
+
+void MainDialog::createTrayIcon()
+{
+    /*trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(minimizeAction);
+    trayIconMenu->addAction(maximizeAction);
+    trayIconMenu->addAction(restoreAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);*/
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(menu);//trayIconMenu);
+    trayIcon->setIcon(QIcon(":/images/logo.svg"));
+    trayIcon->setToolTip("Jchat : talkers");
+
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                 this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 }
 
 void MainDialog::layoutElements()
@@ -119,9 +154,10 @@ void MainDialog::leftClicked()
 
 }
 
-void MainDialog::exitActTriggered()
+void MainDialog::quitActionTriggered()
 {
-    this->close();
+    //TODO close doors
+    qApp->quit();
 }
 
 void MainDialog::showEvent(QShowEvent *e)
@@ -134,3 +170,17 @@ void MainDialog::showEvent(QShowEvent *e)
     }
 }
 
+void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
+ {
+     switch (reason) {
+     case QSystemTrayIcon::Trigger:
+     case QSystemTrayIcon::DoubleClick:
+         showhide();
+         break;
+     case QSystemTrayIcon::MiddleClick:
+         //TODO
+         break;
+     default:
+         ;
+     }
+ }

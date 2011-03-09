@@ -2,14 +2,13 @@
 **	Author: Svirskiy Sergey			Nickname: Happ
 ******************************************************************************/
 
-#include <QtGui/QApplication>
-#include "ui/maindialog.h"
+#ifndef SETTINGSMANAGER_H
+#define SETTINGSMANAGER_H
 
-int main(int argc, char *argv[])
+class SettingsManager
 {
-    QApplication a(argc, argv);
-    MainDialog w;
-    w.show();
+public:
+    SettingsManager();
+};
 
-    return a.exec();
-}
+#endif // SETTINGSMANAGER_H

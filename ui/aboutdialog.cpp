@@ -3,6 +3,7 @@
 ******************************************************************************/
 
 #include "aboutdialog.h"
+#include "consts.h"
 #include <QtGui>
 #include <QtSvg/QSvgWidget>
 
@@ -11,6 +12,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     this->setWindowTitle(tr("About programm"));
     this->setFixedSize(400, 200);
+    this->setWindowIcon(QIcon(":/images/help.svg"));
 
     createElements();
     layoutElements();
@@ -20,7 +22,9 @@ void AboutDialog::createElements()
 {
     about = new QTextEdit();
     about->setReadOnly(true);
-    about->setHtml(tr("<h2>Jchat #0 alfa</h2>"
+    int maj = (version >> 16) & 0xFF;
+    int min = (version >> 8) & 0xFF;
+    about->setHtml(tr("<h2>Jchat %1.%2</h2>"
                        "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
                        "Jchat is written in C++ using Qt. "
                        "Jchat is released, and may be modified and redistributed,  "
@@ -32,7 +36,7 @@ void AboutDialog::createElements()
                        "<h3>Testers:</h3>"
                        "<ul style='font-size: 12px;'><li>DEg</li>"
                        "<li>Un1c0rn</li>"
-                       "<li>Denzel</li></ul>"));
+                       "<li>Denzel</li></ul>").arg(maj).arg(min));
 
     buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(tr("Help"), QDialogButtonBox::HelpRole);
@@ -62,5 +66,5 @@ void AboutDialog::layoutElements()
 
 void AboutDialog::helpRequested()
 {
-    QDesktopServices::openUrl(QUrl("http://code.google.com/p/happ-talk-jchat/"));
+    QDesktopServices::openUrl(QUrl(url));
 }

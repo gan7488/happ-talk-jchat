@@ -1,15 +1,17 @@
 <RCC>
-    <qresource prefix="/">
-        <file>images/desktop.svg</file>
-        <file>images/help.svg</file>
-        <file>images/logo.svg</file>
-        <file>images/office.svg</file>
-        <file>images/photocam.svg</file>
-        <file>images/preferences.svg</file>
-        <file>images/transfer.svg</file>
-        <file>images/users.svg</file>
-        <file>images/web.svg</file>
-        <file>images/write.svg</file>
-        <file>styles/default.qss</file>
+    <qresource prefix="/images">
+        <file alias="desktop.svg">resources/images/desktop.svg</file>
+        <file alias="help.svg">resources/images/help.svg</file>
+        <file alias="logo.svg">resources/images/logo.svg</file>
+        <file alias="office.svg">resources/images/office.svg</file>
+        <file alias="photocam.svg">resources/images/photocam.svg</file>
+        <file alias="preferences.svg">resources/images/preferences.svg</file>
+        <file alias="transfer.svg">resources/images/transfer.svg</file>
+        <file alias="users.svg">resources/images/users.svg</file>
+        <file alias="web.svg">resources/images/web.svg</file>
+        <file alias="write.svg">resources/images/write.svg</file>
+    </qresource>
+    <qresource prefix="/styles">
+        <file alias="default.qss">resources/styles/default.qss</file>
     </qresource>
 </RCC>

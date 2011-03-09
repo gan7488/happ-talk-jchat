@@ -3,9 +3,9 @@
 ******************************************************************************/
 
 #include "configdialog.h"
-#include "generalconfigwidget.h"
-#include "chatconfigwidget.h"
-#include "proxyconfigwidget.h"
+#include "widgets/generalconfigwidget.h"
+#include "widgets/chatconfigwidget.h"
+#include "widgets/proxyconfigwidget.h"
 #include <QtGui>
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
@@ -13,6 +13,8 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 {
     this->setMinimumSize(500, 400);
     this->setWindowTitle(tr("Configuration"));
+    this->setWindowIcon(QIcon(":/images/preferences.svg"));
+
     createTabs();
     createButtons();
     layoutElements();
@@ -21,15 +23,17 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 void ConfigDialog::createTabs()
 {
     tabs = new QTabWidget();
+    tabs->setIconSize(QSize(40,40));
 
     //TODO
     generalConf = new GeneralConfigWidget();
     chatConf = new ChatConfigWidget();
     proxyConf = new ProxyConfigWidget();
 
-    tabs->addTab(generalConf, tr("General"));
-    tabs->addTab(chatConf, tr("Chat"));
-    tabs->addTab(proxyConf, tr("Proxy"));
+    tabs->addTab(generalConf, QIcon(":/images/desktop.svg"), tr("General"));
+    tabs->addTab(chatConf,QIcon(":/images/users.svg"), tr("Chat"));
+    tabs->addTab(proxyConf, QIcon(":/images/web.svg"), tr("Proxy"));
+    tabs->addTab(new QLabel("TRANSFER SETTINGS GOES HERE"), QIcon(":/images/transfer.svg"), tr("Transfer"));
 }
 
 void ConfigDialog::createButtons()

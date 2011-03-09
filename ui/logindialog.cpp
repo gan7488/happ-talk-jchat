@@ -8,8 +8,10 @@
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent)
 {
-    this->setFixedSize(250, 105);
+    this->setFixedSize(350, 105);
     this->setWindowTitle(tr("Login"));
+    this->setWindowIcon(QIcon(":/images/web.svg"));
+
     createElements();
     layoutElements();
 }
@@ -28,6 +30,7 @@ void LoginDialog::createElements()
     buttonBox->addButton(tr("Login"), QDialogButtonBox::AcceptRole);
     buttonBox->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
     buttonBox->addButton(tr("Join"), QDialogButtonBox::HelpRole);
+    buttonBox->setCenterButtons(true);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejected()));

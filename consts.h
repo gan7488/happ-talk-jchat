@@ -2,14 +2,13 @@
 **	Author: Svirskiy Sergey			Nickname: Happ
 ******************************************************************************/
 
-#include <QtGui/QApplication>
-#include "ui/maindialog.h"
+#ifndef CONSTS_H
+#define CONSTS_H
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-    MainDialog w;
-    w.show();
+#include <Qt>
 
-    return a.exec();
-}
+const QString url = "http://code.google.com/p/happ-talk-jchat/";
+
+const int version = 0x10100;
+
+#endif // CONSTS_H
