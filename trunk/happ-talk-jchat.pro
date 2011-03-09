@@ -7,32 +7,35 @@ TEMPLATE = app
 LIBS += -lgloox
 
 SOURCES += main.cpp \
-    maindialog.cpp \
-    aboutdialog.cpp \
-    configdialog.cpp \
-    talksdialog.cpp \
-    talkerinfowidget.cpp \
-    talkwidget.cpp \
-    roominfowidget.cpp \
-    generalconfigwidget.cpp \
-    chatconfigwidget.cpp \
-    proxyconfigwidget.cpp \
-    logindialog.cpp \
-    jclient.cpp
+    ui/maindialog.cpp \
+    ui/aboutdialog.cpp \
+    ui/configdialog.cpp \
+    ui/talksdialog.cpp \
+    ui/logindialog.cpp \
+    ui/widgets/talkerinfowidget.cpp \
+    ui/widgets/talkwidget.cpp \
+    ui/widgets/roominfowidget.cpp \
+    ui/widgets/generalconfigwidget.cpp \
+    ui/widgets/chatconfigwidget.cpp \
+    ui/widgets/proxyconfigwidget.cpp \
+    xmpp/jclient.cpp \
+    settingsmanager.cpp
 
 HEADERS  += \
-    maindialog.h \
-    aboutdialog.h \
-    configdialog.h \
-    talksdialog.h \
-    talkerinfowidget.h \
-    talkwidget.h \
-    roominfowidget.h \
-    generalconfigwidget.h \
-    chatconfigwidget.h \
-    proxyconfigwidget.h \
-    logindialog.h \
-    jclient.h
+    ui/maindialog.h \
+    ui/aboutdialog.h \
+    ui/configdialog.h \
+    ui/talksdialog.h \
+    ui/logindialog.h \
+    ui/widgets/talkerinfowidget.h \
+    ui/widgets/talkwidget.h \
+    ui/widgets/roominfowidget.h \
+    ui/widgets/generalconfigwidget.h \
+    ui/widgets/chatconfigwidget.h \
+    ui/widgets/proxyconfigwidget.h \
+    xmpp/jclient.h \
+    settingsmanager.h \
+    consts.h
 
 OTHER_FILES += \
     readme.txt

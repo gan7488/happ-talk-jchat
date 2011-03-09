@@ -33,8 +33,8 @@ void JClient::onConnect()
 void JClient::onDisconnect( ConnectionError e )
 {
     QMessageBox msgBox;
-    msgBox.setText("void JClient::onDisconnect( ConnectionError e )");
-    msgBox.setInformativeText(QString((int)e));
+    //msgBox.setText("void JClient::onDisconnect( ConnectionError e )");
+    msgBox.setText(QString("Error %1").arg((int)e));
     msgBox.setStandardButtons(QMessageBox::Ok);
     int ret = msgBox.exec();
 }

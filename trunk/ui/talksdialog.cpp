@@ -3,15 +3,16 @@
 ******************************************************************************/
 
 #include "talksdialog.h"
-#include "talkwidget.h"
-#include "talkerinfowidget.h"
-#include "roominfowidget.h"
+#include "widgets/talkwidget.h"
+#include "widgets/talkerinfowidget.h"
+#include "widgets/roominfowidget.h"
 #include <QtGui>
 
 TalksDialog::TalksDialog(QWidget *parent) :
     QDialog(parent)
 {
     this->setWindowFlags(Qt::Window);
+    this->setWindowIcon(QIcon(":/images/write.svg"));
     createTabs();
     layoutElements();
 }
@@ -34,10 +35,11 @@ void TalksDialog::createTabs()
     //TODO On close | handle event
 
     tabs = new QTabWidget();
+    tabs->setIconSize(QSize(30,30));
     tabs->setTabPosition(QTabWidget::West);
-    tabs->addTab(rooms, tr("Rooms"));
-    tabs->addTab(chats, tr("Chats"));
-    tabs->addTab(advanced, tr("Advanced"));
+    tabs->addTab(rooms, QIcon(":/images/users.svg"), tr("Rooms"));
+    tabs->addTab(chats, QIcon(":/images/logo.svg"), tr("Chats"));
+    tabs->addTab(advanced, QIcon(":/images/office.svg"), tr("Advanced"));
 
     RoomInfoWidget *info = new RoomInfoWidget();
     info->setVisible(false);

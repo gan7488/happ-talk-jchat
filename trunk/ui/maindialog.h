@@ -6,7 +6,7 @@
 #define MAINDIALOG_H
 
 #include <QDialog>
-#include "jclient.h"
+#include <QSystemTrayIcon>
 
 class QMenu;
 class QTreeView;
@@ -16,6 +16,8 @@ class LoginDialog;
 class AboutDialog;
 class ConfigDialog;
 class TalksDialog;
+
+class JClient;
 
 class MainDialog : public QDialog
 {
@@ -27,15 +29,19 @@ public:
 signals:
 
 public slots:
+    void showhide();
 
 protected:
     void showEvent(QShowEvent *e);
+    void closeEvent(QCloseEvent *event);
 
 private:
     void createTree();
     void createButtons();
     void createMenus();
+    void createActions();
     void createWindows();
+    void createTrayIcon();
     void layoutElements();
 
     LoginDialog *login;
@@ -51,17 +57,23 @@ private:
     QPushButton *left;
 
     QMenu *menu;
-    QAction *exitAct;
+    //QAction *aboutAction;
+    QAction *showhideAction;
+    QAction *quitAction;
+
+    QSystemTrayIcon *trayIcon;
 
     JClient *client;
 
 private slots:
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+
     void topClicked();
     void rightClicked();
     void bottomClicked();
     void leftClicked();
 
-    void exitActTriggered();
+    void quitActionTriggered();
 };
 
 #endif // MAINDIALOG_H
