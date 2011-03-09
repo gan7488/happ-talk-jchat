@@ -65,7 +65,7 @@ void MainDialog::createButtons()
     bottom = new QPushButton(tr("-"));
     connect(bottom, SIGNAL(clicked()), this, SLOT(bottomClicked()));
 
-    left = new QPushButton(tr("<"));
+    left = new QPushButton(QIcon(":/images/folder.svg"), tr("<"));
     connect(left, SIGNAL(clicked()), this, SLOT(leftClicked()));
 }
 
@@ -74,7 +74,8 @@ void MainDialog::createActions()
     showhideAction = new QAction(tr("Show / Hide"), this);
     connect(showhideAction, SIGNAL(triggered()), this, SLOT(showhide()));
 
-    quitAction = new QAction(tr("Quit"), this);
+    quitAction = new QAction(QIcon(":/images/exit.svg"), tr("Quit"), this);
+    quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     connect(quitAction, SIGNAL(triggered()), this, SLOT(quitActionTriggered()));
 }
 

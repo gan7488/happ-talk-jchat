@@ -8,6 +8,7 @@
 #include <QWidget>
 
 class QTextEdit;
+class MessageWidget;
 class QPushButton;
 class QWidget;
 
@@ -27,7 +28,7 @@ private:
     void layoutElements();
 
     QTextEdit *story;
-    QTextEdit *message;
+    MessageWidget *message;
 
     QPushButton *send;
 
@@ -43,7 +44,7 @@ private:
     QWidget *info;
 
 private slots:
-
+    void sendMessage();
 };
 
 #endif // TALKWIDGET_H

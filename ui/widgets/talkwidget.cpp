@@ -3,16 +3,13 @@
 ******************************************************************************/
 
 #include "talkwidget.h"
+#include "messagewidget.h"
 #include <QtGui>
 
 TalkWidget::TalkWidget(QWidget *parent, QWidget *info) :
     QWidget(parent)
 {
     this->info = info;
-    if (info != 0)
-    {
-        info->setFixedWidth(100);
-    }
 
     createTexts();
     createButtons();
@@ -24,8 +21,14 @@ void TalkWidget::createTexts()
     story = new QTextEdit();
     story->setReadOnly(true);
 
-    message = new QTextEdit();
+    message = new MessageWidget();
     message->setFixedHeight(70);
+    connect(message, SIGNAL(sendRequested()), this, SLOT(sendMessage()));
+}
+void TalkWidget::sendMessage()
+{
+    story->append(message->toHtml());
+    message->clear();
 }
 
 void TalkWidget::createButtons()
@@ -53,7 +56,7 @@ void TalkWidget::createButtons()
     clear->setFixedSize(40, 25);
 
     send = new QPushButton(tr("Send"));
-    send->setFixedSize(40, 70);
+    send->setFixedSize(70, 70);
 }
 
 void TalkWidget::layoutElements()
@@ -85,8 +88,8 @@ void TalkWidget::layoutElements()
     }
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->addLayout(vLayout);
-    layout->addWidget(info);
+    layout->addLayout(vLayout, 4);
+    layout->addWidget(info, 1);
     this->setLayout(layout);
 }
 

@@ -38,7 +38,7 @@ void TalksDialog::createTabs()
     tabs->setIconSize(QSize(30,30));
     tabs->setTabPosition(QTabWidget::West);
     tabs->addTab(rooms, QIcon(":/images/users.svg"), tr("Rooms"));
-    tabs->addTab(chats, QIcon(":/images/logo.svg"), tr("Chats"));
+    tabs->addTab(chats, QIcon(":/images/user.svg"), tr("Chats"));
     tabs->addTab(advanced, QIcon(":/images/office.svg"), tr("Advanced"));
 
     RoomInfoWidget *info = new RoomInfoWidget();
