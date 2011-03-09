@@ -7,7 +7,7 @@
 
 #include <QDialog>
 
-class QTextEdit;
+class QLineEdit;
 class QLabel;
 class QDialogButtonBox;
 
@@ -28,8 +28,8 @@ private:
     void createElements();
     void layoutElements();
 
-    QTextEdit *account;
-    QTextEdit *password;
+    QLineEdit *account;
+    QLineEdit *password;
 
     QLabel *noteAcc;
     QLabel *notePas;

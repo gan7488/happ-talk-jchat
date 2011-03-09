@@ -10,7 +10,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
 {
     this->setFixedSize(350, 105);
     this->setWindowTitle(tr("Login"));
-    this->setWindowIcon(QIcon(":/images/web.svg"));
+    this->setWindowIcon(QIcon(":/images/lock.svg"));
 
     createElements();
     layoutElements();
@@ -21,10 +21,9 @@ void LoginDialog::createElements()
     noteAcc = new QLabel(tr("Account:"));
     notePas = new QLabel(tr("Password:"));
 
-    account = new QTextEdit();
-    account->setFixedHeight(25);
-    password = new QTextEdit();
-    password->setFixedHeight(25);
+    account = new QLineEdit();
+    password = new QLineEdit();
+    password->setEchoMode(QLineEdit::Password);
 
     buttonBox = new QDialogButtonBox();
     buttonBox->addButton(tr("Login"), QDialogButtonBox::AcceptRole);
@@ -68,10 +67,10 @@ void LoginDialog::join()
 
 QString LoginDialog::getAccount() const
 {
-    return account->toPlainText();
+    return account->text();
 }
 QString LoginDialog::getPassword() const
 {
-    return password->toPlainText();
+    return password->text();
 }
 

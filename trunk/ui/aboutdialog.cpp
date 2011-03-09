@@ -12,7 +12,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     this->setWindowTitle(tr("About programm"));
     this->setFixedSize(400, 200);
-    this->setWindowIcon(QIcon(":/images/help.svg"));
+    this->setWindowIcon(QIcon(":/images/info.svg"));
 
     createElements();
     layoutElements();

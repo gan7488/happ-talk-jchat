@@ -10,6 +10,15 @@
         <file alias="users.svg">resources/images/users.svg</file>
         <file alias="web.svg">resources/images/web.svg</file>
         <file alias="write.svg">resources/images/write.svg</file>
+        <file alias="exit.svg">resources/images/exit.svg</file>
+        <file alias="folder.svg">resources/images/folder.svg</file>
+        <file alias="home.svg">resources/images/home.svg</file>
+        <file alias="info.svg">resources/images/info.svg</file>
+        <file alias="lock.svg">resources/images/lock.svg</file>
+        <file alias="mail.svg">resources/images/mail.svg</file>
+        <file alias="network.svg">resources/images/network.svg</file>
+        <file alias="server.svg">resources/images/server.svg</file>
+        <file alias="user.svg">resources/images/user.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default.qss">resources/styles/default.qss</file>
