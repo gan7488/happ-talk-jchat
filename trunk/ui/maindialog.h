@@ -11,6 +11,7 @@
 class QMenu;
 class QTreeView;
 class QPushButton;
+template <typename T> class QList;
 
 class LoginDialog;
 class AboutDialog;
@@ -60,6 +61,7 @@ private:
     //QAction *aboutAction;
     QAction *showhideAction;
     QAction *quitAction;
+    QList<QAction *>* statusActions;
 
     QSystemTrayIcon *trayIcon;
 

@@ -43,11 +43,11 @@ void LoginDialog::layoutElements()
     fLayout->addRow(notePas, password);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(fLayout);
     vLayout->addStretch(5);
     vLayout->addWidget(buttonBox);
 
-    fLayout->addRow(vLayout);
-    this->setLayout(fLayout);
+    this->setLayout(vLayout);
 }
 
 void LoginDialog::accepted()
