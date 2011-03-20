@@ -57,15 +57,19 @@ void MainDialog::createTree()
 void MainDialog::createButtons()
 {
     top = new QPushButton(tr("-"));
+    top->setFixedSize(80, 25);
     connect(top, SIGNAL(clicked()), this, SLOT(topClicked()));
 
     right = new QPushButton(tr(">"));
+    right->setFixedSize(40, 55);
     connect(right, SIGNAL(clicked()), this, SLOT(rightClicked()));
 
     bottom = new QPushButton(tr("-"));
+    bottom->setFixedSize(80, 25);
     connect(bottom, SIGNAL(clicked()), this, SLOT(bottomClicked()));
 
     left = new QPushButton(QIcon(":/images/folder.svg"), tr("<"));
+    left->setFixedSize(40, 55);
     connect(left, SIGNAL(clicked()), this, SLOT(leftClicked()));
 }
 
@@ -124,7 +128,9 @@ void MainDialog::layoutElements()
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(left);
+    hLayout->addStretch();
     hLayout->addLayout(vLayout);
+    hLayout->addStretch();
     hLayout->addWidget(right);
 
     QVBoxLayout *layout = new QVBoxLayout();

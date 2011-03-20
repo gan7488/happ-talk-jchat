@@ -3,7 +3,10 @@
 ******************************************************************************/
 
 #include <QtGui/QApplication>
+#include <QtDebug>
+#include <QFile>
 #include "ui/maindialog.h"
+
 
 int main(int argc, char *argv[])
 {
