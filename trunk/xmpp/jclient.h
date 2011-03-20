@@ -17,6 +17,7 @@
 #include <gloox/chatstatefilter.h>
 #include <gloox/client.h>
 #include <gloox/jid.h>
+#include <gloox/loghandler.h>
 
 #include <QObject>
 #include <QString>
@@ -27,7 +28,7 @@ using namespace gloox;
 //class QString;
 
 class JClient : public QObject, PresenceHandler, ConnectionListener, MessageSessionHandler,
-    MessageHandler, MessageEventHandler, ChatStateHandler
+    MessageHandler, MessageEventHandler, ChatStateHandler, LogHandler
 {
     Q_OBJECT
 public:
@@ -47,9 +48,11 @@ public:
     virtual void handleMessageEvent(const JID &from, MessageEventType event);
     //ChatStateHandler
     virtual void handleChatState(const JID &from, ChatStateType state);
+    //LogHandler
+    virtual void handleLog(LogLevel level, LogArea area, const std::string &message);
 
 
-
+    MessageSession* newSession( const JID& to );
     void connect(JID &jid, const QString &password);
 
 protected:
@@ -58,7 +61,7 @@ protected:
 private:
     int timerId;
     Client *client;
-    MessageSession *m_session;
+    MessageSession *m_session, *un_session;
     MessageEventFilter *m_messageEventFilter;
     ChatStateFilter *m_chatStateFilter;
 };

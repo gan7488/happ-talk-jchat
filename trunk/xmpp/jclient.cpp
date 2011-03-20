@@ -23,6 +23,7 @@ void JClient::handlePresence(const Presence &presence)
 void JClient::onConnect()
 {
     qDebug() << "onConnect" << endl;
+    un_session->send("324234");
 }
 void JClient::onDisconnect( ConnectionError e )
 {
@@ -46,24 +47,29 @@ void JClient::connect(JID &jid, const QString &password)
     {
         timerId = startTimer(2000);
     }
+    //client->logInstance().registerLogHandler(LogLevelDebug, LogAreaAll, this);
+    un_session = newSession(JID("[u3]un@jabber.uruchie.org"));
+
 }
 void JClient::timerEvent(QTimerEvent *event)
 {
     if (client == 0) return;
     client->recv(1000);
+
 }
 
 void JClient::handleMessageSession(MessageSession *session)
 {
     qDebug() << "handleMessageSession target " << session->target().bare().c_str()
             << "session pointer " << session << endl;
-    client->disposeMessageSession( m_session );
+    //client->disposeMessageSession( m_session );
     m_session = session;
     m_session->registerMessageHandler( this );
     m_messageEventFilter = new MessageEventFilter( m_session );
     m_messageEventFilter->registerMessageEventHandler( this );
     m_chatStateFilter = new ChatStateFilter( m_session );
     m_chatStateFilter->registerChatStateHandler( this );
+
 
 }
 void JClient::handleMessage(const Message &msg, MessageSession *session)
@@ -73,15 +79,15 @@ void JClient::handleMessage(const Message &msg, MessageSession *session)
             " subject " << msg.subject().c_str() << " thread " << msg.thread().c_str() <<
             " session pointer " << session << endl;
     m_messageEventFilter->raiseMessageEvent( MessageEventDisplayed );
-
+    sleep(1);
     m_messageEventFilter->raiseMessageEvent( MessageEventComposing );
     m_chatStateFilter->setChatState( ChatStateComposing );
     sleep(2);
     QString re = "You said:\n> %1\nI like that statement.";
-    re.arg(QString::fromStdString(msg.body()));
+    re = re.arg(QString::fromStdString(msg.body()));
     QString sub = "RE: %1";
-    sub.arg(QString::fromStdString(msg.subject()));
-    m_session->send(re.toStdString(), sub.toStdString());
+    sub = sub.arg(QString::fromStdString(msg.subject()));
+    session->send(re.toStdString(), sub.toStdString());
 
 }
 void JClient::handleMessageEvent(const JID &from, MessageEventType event)
@@ -94,3 +100,14 @@ void JClient::handleChatState(const JID &from, ChatStateType state)
     qDebug() << "handleChatState from " << QString::fromStdString(from.bare())
             << " state " << state << endl;
 }
+void JClient::handleLog( LogLevel level, LogArea area, const std::string& message )
+{
+    qDebug() << "handleLog level " << level << " area " << area << " message " << message.c_str();
+}
+MessageSession* JClient::newSession( const JID& to )
+ {
+   MessageSession* session = new MessageSession( client, to );
+   //session->registerMessageHandler( this );
+   handleMessageSession(session);
+   return session;
+ }

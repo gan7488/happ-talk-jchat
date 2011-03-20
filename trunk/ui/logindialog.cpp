@@ -4,6 +4,7 @@
 
 #include "logindialog.h"
 #include <QtGui>
+#include "xmpp/jregisterclient.h"
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent)
@@ -62,7 +63,9 @@ void LoginDialog::rejected()
 
 void LoginDialog::join()
 {
-    QMessageBox::information(this, "REGISTER FROM!", "DO IT", QMessageBox::Ok, QMessageBox::Cancel);
+    qDebug() << "join";
+    JRegisterClient reg;
+    reg.createAccount("jabber.uruchie.org");
 }
 
 QString LoginDialog::getAccount() const

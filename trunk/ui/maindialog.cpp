@@ -68,7 +68,7 @@ void MainDialog::createButtons()
     bottom->setFixedSize(80, 25);
     connect(bottom, SIGNAL(clicked()), this, SLOT(bottomClicked()));
 
-    left = new QPushButton(QIcon(":/images/folder.svg"), tr("<"));
+    left = new QPushButton(QIcon(":/images/folder.svg"), "");
     left->setFixedSize(40, 55);
     connect(left, SIGNAL(clicked()), this, SLOT(leftClicked()));
 }

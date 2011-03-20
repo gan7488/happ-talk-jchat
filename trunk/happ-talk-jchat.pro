@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     ui/widgets/chatconfigwidget.cpp \
     ui/widgets/proxyconfigwidget.cpp \
     xmpp/jclient.cpp \
-    ui/widgets/messagewidget.cpp
+    ui/widgets/messagewidget.cpp \
+    xmpp/jregisterclient.cpp
 
 HEADERS  += \
     ui/maindialog.h \
@@ -35,7 +36,8 @@ HEADERS  += \
     ui/widgets/proxyconfigwidget.h \
     xmpp/jclient.h \
     consts.h \
-    ui/widgets/messagewidget.h
+    ui/widgets/messagewidget.h \
+    xmpp/jregisterclient.h
 
 OTHER_FILES += \
     readme.txt
