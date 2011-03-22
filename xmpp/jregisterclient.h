@@ -20,17 +20,8 @@ class JRegisterClient : public QObject, ConnectionListener, RegistrationHandler
 public:
     explicit JRegisterClient(QObject *parent = 0);
 
-    virtual void onConnect();
-    virtual void onDisconnect( ConnectionError e );
-    virtual bool onTLSConnect( const CertInfo& info );
-
-    virtual void handleRegistrationFields( const JID& /*from*/, int fields, std::string instructions );
-    virtual void handleRegistrationResult( const JID& /*from*/, RegistrationResult result );
-    virtual void handleAlreadyRegistered( const JID& /*from*/ );
-    virtual void handleDataForm( const JID& /*from*/, const DataForm& /*form*/ );
-    virtual void handleOOB( const JID& /*from*/, const OOB& oob );
-
     void createAccount(const QString& server);
+    //void createAccount(const QString &server, const QString &username);
 
     QString username() const { return m_username; }
     QString password() const { return m_password; }
@@ -41,6 +32,16 @@ signals:
 public slots:
 
 private:
+    virtual void onConnect();
+    virtual void onDisconnect( ConnectionError e );
+    virtual bool onTLSConnect( const CertInfo& info );
+
+    virtual void handleRegistrationFields( const JID& /*from*/, int fields, std::string instructions );
+    virtual void handleRegistrationResult( const JID& /*from*/, RegistrationResult result );
+    virtual void handleAlreadyRegistered( const JID& /*from*/ );
+    virtual void handleDataForm( const JID& /*from*/, const DataForm& /*form*/ );
+    virtual void handleOOB( const JID& /*from*/, const OOB& oob );
+
     QString m_username;
     QString m_password;
     Registration *reg;

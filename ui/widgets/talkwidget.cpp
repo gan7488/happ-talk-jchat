@@ -25,9 +25,15 @@ void TalkWidget::createTexts()
     message->setFixedHeight(70);
     connect(message, SIGNAL(sendRequested()), this, SLOT(sendMessage()));
 }
+void TalkWidget::messageReceived(const QString &msg)
+{
+    story->append(msg);
+}
+
 void TalkWidget::sendMessage()
 {
     story->append(message->toHtml());
+    emit sendMessage(jid, message->toPlainText());
     message->clear();
 }
 

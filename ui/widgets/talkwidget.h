@@ -6,11 +6,14 @@
 #define TALKWIDGET_H
 
 #include <QWidget>
+#include <gloox/jid.h>
 
 class QTextEdit;
 class MessageWidget;
 class QPushButton;
 class QWidget;
+
+using namespace gloox;
 
 class TalkWidget : public QWidget
 {
@@ -18,15 +21,18 @@ class TalkWidget : public QWidget
 public:
     explicit TalkWidget(QWidget *parent = 0, QWidget *info = 0);
 
+    void setTarget(const JID &target) { jid = target; }
+    JID target() { return jid; }
 signals:
-
+    void sendMessage(const JID& target, const QString &msg);
 public slots:
-
+    void messageReceived(const QString &msg);
 private:
     void createTexts();
     void createButtons();
     void layoutElements();
 
+    JID jid;
     QTextEdit *story;
     MessageWidget *message;
 

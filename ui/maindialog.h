@@ -32,6 +32,7 @@ signals:
 public slots:
     void showhide();
 
+
 protected:
     void showEvent(QShowEvent *e);
     void closeEvent(QCloseEvent *event);
@@ -65,7 +66,7 @@ private:
 
     QSystemTrayIcon *trayIcon;
 
-    JClient *client;
+    JClient* client;
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
