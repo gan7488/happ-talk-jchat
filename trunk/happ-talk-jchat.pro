@@ -1,5 +1,5 @@
 QT       += core gui svg
-#CONFIG += static
+#ONFIG += static
 
 TARGET = happ-talk-jchat
 TEMPLATE = app
@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     ui/widgets/proxyconfigwidget.cpp \
     xmpp/jclient.cpp \
     ui/widgets/messagewidget.cpp \
-    xmpp/jregisterclient.cpp
+    xmpp/jregisterclient.cpp \
+    xmpp/xmppclient.cpp \
+    xmpp/xmpptalk.cpp
 
 HEADERS  += \
     ui/maindialog.h \
@@ -37,7 +39,9 @@ HEADERS  += \
     xmpp/jclient.h \
     consts.h \
     ui/widgets/messagewidget.h \
-    xmpp/jregisterclient.h
+    xmpp/jregisterclient.h \
+    xmpp/xmppclient.h \
+    xmpp/xmpptalk.h
 
 OTHER_FILES += \
     readme.txt

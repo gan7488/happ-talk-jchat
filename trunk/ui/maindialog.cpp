@@ -15,6 +15,9 @@
 MainDialog::MainDialog(QWidget *parent) :
     QDialog(parent)
 {
+    client = new JClient(JID("jchat@jabber.uruchie.org"), QString("test"));
+    client->connect();
+
     this->setMinimumSize(250, 400);
     this->setMaximumWidth(400);
     this->setWindowTitle(tr("Jchat : Talkers"));
@@ -27,7 +30,8 @@ MainDialog::MainDialog(QWidget *parent) :
     createMenus();
     createTrayIcon();
     trayIcon->setVisible(true);
-    client = new JClient();
+    //client = 0;
+    //client = new JClient(JID("jchat@jabber.uruchie.org"), QString());
 }
 
 MainDialog::~MainDialog()
@@ -98,7 +102,7 @@ void MainDialog::createWindows()
 {
     about = new AboutDialog();
     config = new ConfigDialog();
-    talks = new TalksDialog();
+    talks = new TalksDialog(client);
     login = new LoginDialog();
 }
 
@@ -169,12 +173,18 @@ void MainDialog::quitActionTriggered()
 
 void MainDialog::showEvent(QShowEvent *e)
 {
+    qDebug() << "pointer " << (int) client;
+    if (client != 0) return;
     int ret = login->exec();
     if (ret == QDialog::Accepted)
     {
         JID jid(login->getAccount().toStdString());
-        client->connect(jid, login->getPassword());
+        client = new JClient(jid, login->getPassword());
+        client->connect();
+
+        //client->connect(jid, login->getPassword());
     }
+
 }
 
 void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
