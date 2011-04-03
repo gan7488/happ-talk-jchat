@@ -19,6 +19,17 @@
         <file alias="network.svg">resources/images/network.svg</file>
         <file alias="server.svg">resources/images/server.svg</file>
         <file alias="user.svg">resources/images/user.svg</file>
+        <file alias="add.svg">resources/images/add.svg</file>
+        <file alias="contact.svg">resources/images/contact.svg</file>
+        <file alias="relax.svg">resources/images/relax.svg</file>
+        <file alias="remove.svg">resources/images/remove.svg</file>
+        <file alias="shotwell.svg">resources/images/shotwell.svg</file>
+        <file alias="sound.svg">resources/images/sound.svg</file>
+        <file alias="status-avaliable.svg">resources/images/status-available.svg</file>
+        <file alias="status-away.svg">resources/images/status-away.svg</file>
+        <file alias="status-dnd.svg">resources/images/status-dnd.svg</file>
+        <file alias="status-invisible.svg">resources/images/status-invisible.svg</file>
+        <file alias="status-offline.svg">resources/images/status-offline.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file alias="default.qss">resources/styles/default.qss</file>

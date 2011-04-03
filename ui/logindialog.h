@@ -6,10 +6,12 @@
 #define LOGINDIALOG_H
 
 #include <QDialog>
+#include "xmpp/xmppregistration.h"
 
-class QLineEdit;
-class QLabel;
+class QCheckBox;
 class QDialogButtonBox;
+class QLineEdit;
+class QSvgWidget;
 
 class LoginDialog : public QDialog
 {
@@ -17,29 +19,36 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(QWidget *parent = 0);
 
-    QString getAccount() const;
-    QString getPassword() const;
+    const QString username() const;
+    const QString server() const;
+    const QString password() const;
 
-signals:
-
-public slots:
+protected:
+    void showEvent(QShowEvent *e);
 
 private:
     void createElements();
     void layoutElements();
 
-    QLineEdit *account;
-    QLineEdit *password;
+    QLineEdit *uname;
+    QLineEdit *serv;
+    QLineEdit *pass;
 
-    QLabel *noteAcc;
-    QLabel *notePas;
+    QCheckBox *join;
 
-    QDialogButtonBox *buttonBox;
+    QSvgWidget *logo;
 
+    QDialogButtonBox *buttons;
+
+    XMPPRegistration *reg;
 private slots:
     void accepted();
     void rejected();
-    void join();
+
+    void connected();
+    void disconnected(ConnectionError e);
+    void registrationCompleted(RegistrationResult);
+
 };
 
 #endif // LOGINDIALOG_H

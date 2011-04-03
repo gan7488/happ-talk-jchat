@@ -1,10 +1,10 @@
 QT       += core gui svg
-#ONFIG += static
+#CONFIG += static
 
 TARGET = happ-talk-jchat
 TEMPLATE = app
-#LIBS += -LD:\Projects\Programming.Qt\happ-talk-jchat-build-desktop\debug -lgloox
-LIBS += -lgloox
+LIBS += -LD:\Projects\Programming.Qt\happ-talk-jchat-build-desktop\debug -lgloox
+#LIBS += -lgloox
 
 SOURCES += main.cpp \
     ui/maindialog.cpp \
@@ -18,13 +18,15 @@ SOURCES += main.cpp \
     ui/widgets/generalconfigwidget.cpp \
     ui/widgets/chatconfigwidget.cpp \
     ui/widgets/proxyconfigwidget.cpp \
-    xmpp/jclient.cpp \
     ui/widgets/messagewidget.cpp \
+    xmpp/jclient.cpp \
     xmpp/jregisterclient.cpp \
     xmpp/xmppclient.cpp \
-    xmpp/xmpptalk.cpp
+    xmpp/xmppregistration.cpp \
+    xmpp/xmppmessaging.cpp
 
 HEADERS  += \
+    consts.h \
     ui/maindialog.h \
     ui/aboutdialog.h \
     ui/configdialog.h \
@@ -36,12 +38,13 @@ HEADERS  += \
     ui/widgets/generalconfigwidget.h \
     ui/widgets/chatconfigwidget.h \
     ui/widgets/proxyconfigwidget.h \
-    xmpp/jclient.h \
-    consts.h \
     ui/widgets/messagewidget.h \
+    xmpp/jclient.h \
     xmpp/jregisterclient.h \
     xmpp/xmppclient.h \
-    xmpp/xmpptalk.h
+    xmpp/xmppregistration.h \
+    xmpp/xmppclientextension.h \
+    xmpp/xmppmessaging.h
 
 OTHER_FILES += \
     readme.txt

@@ -13,9 +13,9 @@ using namespace gloox;
 class XMPPTalk
 {
 public:
-    XMPPTalk(const JID& target);
-    XMPPTalk(MessageSession *session);
-    ~XMPPTalk(void);
+    XMPPTalk();//const JID& target);
+    //XMPPTalk(MessageSession *session);
+    //~XMPPTalk(void);
 };
 
 #endif // XMPPTALK_H

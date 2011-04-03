@@ -17,17 +17,13 @@ class AboutDialog : public QDialog
 public:
     explicit AboutDialog(QWidget *parent = 0);
 
-signals:
-
-public slots:
-
 private:
     void createElements();
     void layoutElements();
 
-    QDialogButtonBox *buttonBox;
-    QSvgWidget *logo;
-    QTextEdit *about;
+    QDialogButtonBox    *buttons;
+    QSvgWidget          *logo;
+    QTextEdit           *about;
 
 private slots:
     void helpRequested();
