@@ -9,6 +9,7 @@
 
 class QDialogButtonBox;
 class QTabWidget;
+
 class GeneralConfigWidget;
 class ChatConfigWidget;
 class ProxyConfigWidget;
@@ -19,21 +20,17 @@ class ConfigDialog : public QDialog
 public:
     explicit ConfigDialog(QWidget *parent = 0);
 
-signals:
-
-public slots:
-
 private:
-    void createTabs();
     void createButtons();
+    void createTabs();
     void layoutElements();
 
-    QDialogButtonBox *buttonBox;
-    QTabWidget *tabs;
+    QDialogButtonBox    *buttons;
+    QTabWidget          *tabs;
 
     GeneralConfigWidget *generalConf;
-    ChatConfigWidget *chatConf;
-    ProxyConfigWidget *proxyConf;
+    ChatConfigWidget    *chatConf;
+    ProxyConfigWidget   *proxyConf;
 
 private slots:
     void accepted();

@@ -6,12 +6,15 @@
 #define MAINDIALOG_H
 
 #include <QDialog>
+#include <QList>
 #include <QSystemTrayIcon>
+#include "xmpp/xmppclient.h"
+#include "xmpp/xmppmessaging.h"
+
 
 class QMenu;
 class QTreeView;
 class QPushButton;
-template <typename T> class QList;
 
 class LoginDialog;
 class AboutDialog;
@@ -32,24 +35,24 @@ signals:
 public slots:
     void showhide();
 
-
 protected:
+    void reject() {}
     void showEvent(QShowEvent *e);
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *e);
 
 private:
-    void createTree();
-    void createButtons();
-    void createMenus();
     void createActions();
-    void createWindows();
+    void createButtons();
     void createTrayIcon();
+    void createTree();
+    void createMenus();
+    void createWindows();
     void layoutElements();
 
-    LoginDialog *login;
-    AboutDialog *about;
-    ConfigDialog *config;
-    TalksDialog *talks;
+    AboutDialog     *about;
+    ConfigDialog    *config;
+    LoginDialog     *login;
+    TalksDialog     *talks;
 
     QTreeView *buddies;
 
@@ -59,16 +62,26 @@ private:
     QPushButton *left;
 
     QMenu *menu;
-    //QAction *aboutAction;
+    QMenu *statusMenu;
+
+    QAction *newTalk;
+
+    QAction *configAction;
+    QAction *aboutAction;
+    QAction *aboutQtAction;
     QAction *showhideAction;
     QAction *quitAction;
-    QList<QAction *>* statusActions;
+
+    QList<QAction *> statusActions;
 
     QSystemTrayIcon *trayIcon;
 
     JClient* client;
 
+    XMPPClient      *m_client;
+    XMPPMessaging   *m_messaging;
 private slots:
+    void loginAccepted();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void topClicked();
@@ -76,7 +89,11 @@ private slots:
     void bottomClicked();
     void leftClicked();
 
+    void configActionTriggered();
+    void aboutActionTriggered();
+    void aboutQtActionTriggered();
     void quitActionTriggered();
+    void status();
 };
 
 #endif // MAINDIALOG_H

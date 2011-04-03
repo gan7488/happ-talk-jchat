@@ -10,7 +10,7 @@
 #include <QList>
 #include <gloox/jid.h>
 #include "widgets/talkwidget.h"
-#include "xmpp/jclient.h"
+#include "xmpp/xmppmessaging.h"
 
 class QTabWidget;
 class QString;
@@ -21,12 +21,17 @@ class TalksDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TalksDialog(JClient *client ,QWidget *parent = 0);
+    explicit TalksDialog(QWidget *parent = 0);
 
+    void setMessaging(XMPPMessaging *messaging);
 signals:
 
 public slots:
     void messageRecieved(const JID &from, const QString &msg);
+
+protected:
+    void showEvent(QShowEvent *e);
+    void closeEvent(QCloseEvent *e);
 
 private:
     void createTabs();
@@ -39,7 +44,7 @@ private:
 
     //QMap<JID, QWidget*> openedTalks;
     QList<TalkWidget *> talkWidgets;
-    JClient *client;
+    XMPPMessaging *client;
 private slots:
     TalkWidget* newTalk(const JID &target);
 

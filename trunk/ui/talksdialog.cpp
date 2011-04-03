@@ -3,12 +3,13 @@
 ******************************************************************************/
 
 #include "talksdialog.h"
+#include "consts.h"
 #include "widgets/talkwidget.h"
 #include "widgets/talkerinfowidget.h"
 #include "widgets/roominfowidget.h"
 #include <QtGui>
 
-TalksDialog::TalksDialog(JClient *client, QWidget *parent) :
+TalksDialog::TalksDialog(QWidget *parent) :
     QDialog(parent)
 {
     this->setWindowFlags(Qt::Window);
@@ -16,8 +17,28 @@ TalksDialog::TalksDialog(JClient *client, QWidget *parent) :
     this->setMinimumSize(600, 400);
     createTabs();
     layoutElements();
-    this->client = client;
-    connect(client, SIGNAL(messageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
+    //this->client = client;
+    //connect(client, SIGNAL(messageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
+}
+void TalksDialog::setMessaging(XMPPMessaging *messaging)
+{
+    client = messaging;
+    connect(client, SIGNAL(chatMessageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
+}
+
+void TalksDialog::showEvent(QShowEvent *e)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    restoreGeometry(settings.value("talksdialog/geometry").toByteArray());
+
+    QDialog::showEvent(e);
+}
+void TalksDialog::closeEvent(QCloseEvent *e)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    settings.setValue("talksdialog/geometry", saveGeometry());
+
+    QDialog::closeEvent(e);
 }
 
 void TalksDialog::createTabs()
@@ -84,11 +105,14 @@ void TalksDialog::messageRecieved(const JID &from, const QString &msg)
 }
 TalkWidget* TalksDialog::newTalk(const JID &target)
 {
+    raise();
     TalkWidget *widget = new TalkWidget();
     widget->setTarget(target);
-    connect(widget, SIGNAL(sendMessage(JID,QString)), client, SLOT(sendMessage(JID,QString)));
+    /* IT'S A BIG HOLE */
+    if (!client) return widget;
+    connect(widget, SIGNAL(sendMessage(JID,QString)), client, SLOT(sendChatMessage(JID,QString)));
     talkWidgets.append(widget);
-    talks->addTab(widget, QString::fromUtf8(target.bare().c_str()));
+    talks->addTab(widget, QString::fromUtf8(target.username().c_str()));
     return widget;
 }
 
@@ -99,7 +123,7 @@ void TalksDialog::closeRoom(int index)
 void TalksDialog::closeTalk(int index)
 {
     TalkWidget *widget = (TalkWidget *)talks->currentWidget();
-    client->endTalk(widget->target());
+    client->endChat(widget->target());
     talkWidgets.removeOne(widget);
     talks->removeTab(index);
     delete widget;

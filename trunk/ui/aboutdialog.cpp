@@ -22,9 +22,10 @@ void AboutDialog::createElements()
 {
     about = new QTextEdit();
     about->setReadOnly(true);
-    int maj = (version >> 16) & 0xFF;
-    int min = (version >> 8) & 0xFF;
-    about->setHtml(tr("<h2>Jchat %1.%2</h2>"
+    int maj = (version >> 20) & 0xFF;
+    int min = (version >> 12) & 0xFF;
+    int build = version & 0xFFF;
+    about->setHtml(tr("<h2>%1 %2.%3.%4</h2>"
                        "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
                        "Jchat is written in C++ using Qt. "
                        "Jchat is released, and may be modified and redistributed,  "
@@ -36,14 +37,14 @@ void AboutDialog::createElements()
                        "<h3>Testers:</h3>"
                        "<ul style='font-size: 12px;'><li>DEg</li>"
                        "<li>Un1c0rn</li>"
-                       "<li>Denzel</li></ul>").arg(maj).arg(min));
+                       "<li>Denzel</li></ul>").arg(app).arg(maj).arg(min).arg(build));
 
-    buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(tr("Help"), QDialogButtonBox::HelpRole);
-    buttonBox->addButton(tr("Close"), QDialogButtonBox::AcceptRole);
+    buttons = new QDialogButtonBox(Qt::Horizontal);
+    buttons->addButton(tr("Help"), QDialogButtonBox::HelpRole);
+    buttons->addButton(tr("Close"), QDialogButtonBox::AcceptRole);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttons, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
 
     logo = new QSvgWidget();
     logo->setFixedSize(130,150);
@@ -59,7 +60,7 @@ void AboutDialog::layoutElements()
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout);
     vLayout->addSpacing(10);
-    vLayout->addWidget(buttonBox);
+    vLayout->addWidget(buttons);
 
     setLayout(vLayout);
 }

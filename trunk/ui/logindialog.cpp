@@ -3,57 +3,116 @@
 ******************************************************************************/
 
 #include "logindialog.h"
+#include "consts.h"
 #include <QtGui>
+#include <QSvgWidget>
 #include "xmpp/jregisterclient.h"
+#include "xmpp/xmppregistration.h"
 
 LoginDialog::LoginDialog(QWidget *parent) :
-    QDialog(parent)
+        QDialog(parent), reg(0)
 {
-    this->setFixedSize(350, 105);
+    //this->setFixedSize(310, 215);
+    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     this->setWindowTitle(tr("Login"));
     this->setWindowIcon(QIcon(":/images/lock.svg"));
 
     createElements();
     layoutElements();
+
+    this->setFixedSize(sizeHint());
+}
+
+void LoginDialog::showEvent(QShowEvent *e)
+{
+    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    uname->setText(settings.value("account/username").toString());
+    serv->setText(settings.value("account/server").toString());
+
+    QDialog::showEvent(e);
 }
 
 void LoginDialog::createElements()
 {
-    noteAcc = new QLabel(tr("Account:"));
-    notePas = new QLabel(tr("Password:"));
+    uname   = new QLineEdit();
+    serv    = new QLineEdit();
+    pass    = new QLineEdit();
+    pass->setEchoMode(QLineEdit::Password);
 
-    account = new QLineEdit();
-    password = new QLineEdit();
-    password->setEchoMode(QLineEdit::Password);
+    join = new QCheckBox(tr("Create account"));
 
-    buttonBox = new QDialogButtonBox();
-    buttonBox->addButton(tr("Login"), QDialogButtonBox::AcceptRole);
-    buttonBox->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
-    buttonBox->addButton(tr("Join"), QDialogButtonBox::HelpRole);
-    buttonBox->setCenterButtons(true);
+    buttons = new QDialogButtonBox();
+    buttons->addButton(tr("Login"), QDialogButtonBox::AcceptRole);
+    buttons->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
+    buttons->setCenterButtons(true);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejected()));
-    connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(join()));
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accepted()));
+    connect(buttons, SIGNAL(rejected()), this, SLOT(rejected()));
+
+    logo = new QSvgWidget();
+    logo->setFixedSize(150,150);
+    logo->load(QString(":/images/lock.svg"));
 }
 
 void LoginDialog::layoutElements()
 {
-    QFormLayout *fLayout = new QFormLayout();
-    fLayout->addRow(noteAcc, account);
-    fLayout->addRow(notePas, password);
-
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addLayout(fLayout);
-    vLayout->addStretch(5);
-    vLayout->addWidget(buttonBox);
+    vLayout->addWidget(new QLabel(tr("Username:")));
+    vLayout->addWidget(uname);
+    vLayout->addWidget(new QLabel(tr("Server:")));
+    vLayout->addWidget(serv);
+    vLayout->addWidget(new QLabel(tr("Password:")));
+    vLayout->addWidget(pass);
+    vLayout->addWidget(join);
 
-    this->setLayout(vLayout);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addWidget(logo);
+    hLayout->addLayout(vLayout);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addLayout(hLayout);
+    layout->addSpacing(10);
+    layout->addWidget(buttons);
+
+    this->setLayout(layout);
 }
 
 void LoginDialog::accepted()
 {
-    this->accept();
+    if (join->checkState() != Qt::Checked)
+    {
+        if (uname->text().isEmpty() || serv->text().isEmpty() || pass->text().isEmpty())
+        {
+            QMessageBox::information(this,
+                                     tr("Some fields is empty!"),
+                                     tr("Fill all fields (username, server, password)"), QMessageBox::Ok);
+            return;
+        }
+        QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+        settings.setValue("account/username", uname->text());
+        settings.setValue("account/server", serv->text());
+
+        this->accept();
+        return;
+    }
+    //@todo complete
+    qDebug() << "join";
+    if (serv->text().isEmpty())
+    {
+        QMessageBox::information(this,
+                                 tr("Where?"),
+                                 tr("Type server name"), QMessageBox::Ok);
+        return;
+    }
+    //JRegisterClient reg;
+    //reg.createAccount("jabber.uruchie.org");
+    reg = new XMPPRegistration(server());
+    reg->setUsername(username());
+    reg->setPassword(password());
+    reg->connect();
+    connect(reg, SIGNAL(connected()), this, SLOT(connected()));
+    connect(reg,SIGNAL(registrationCompleted(RegistrationResult)),
+            this, SLOT(registrationCompleted(RegistrationResult)));
 }
 
 void LoginDialog::rejected()
@@ -61,19 +120,38 @@ void LoginDialog::rejected()
     this->reject();
 }
 
-void LoginDialog::join()
+const QString LoginDialog::username() const
 {
-    qDebug() << "join";
-    JRegisterClient reg;
-    reg.createAccount("jabber.uruchie.org");
+    return uname->text();
+}
+const QString LoginDialog::server() const
+{
+    return serv->text();
+}
+const QString LoginDialog::password() const
+{
+    return pass->text();
 }
 
-QString LoginDialog::getAccount() const
+void LoginDialog::connected()
 {
-    return account->text();
+    reg->createAccount();
 }
-QString LoginDialog::getPassword() const
+
+void LoginDialog::disconnected(ConnectionError e)
 {
-    return password->text();
+
+}
+
+void LoginDialog::registrationCompleted(RegistrationResult r)
+{
+    reg->disconnect();
+    if (r == RegistrationSuccess)
+    {
+        QMessageBox::information(this, tr("SUCCESS!"), tr("Registration succesfully completed"));
+        join->setChecked(false);
+    }
+    else
+        QMessageBox::information(this, tr("Failed!"), tr("Registration has not completed"));
 }
 

@@ -15,10 +15,25 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     this->setWindowTitle(tr("Configuration"));
     this->setWindowIcon(QIcon(":/images/preferences.svg"));
 
-    createTabs();
     createButtons();
+    createTabs();
     layoutElements();
 }
+
+void ConfigDialog::createButtons()
+{
+    QPushButton *apply;
+
+    buttons = new QDialogButtonBox();
+    buttons->addButton(tr("OK"), QDialogButtonBox::AcceptRole);
+    buttons->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
+    apply = buttons->addButton(tr("Apply"), QDialogButtonBox::ApplyRole);
+
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accepted()));
+    connect(buttons, SIGNAL(rejected()), this, SLOT(rejected()));
+    connect(apply, SIGNAL(clicked()), this, SLOT(applied()));
+}
+
 
 void ConfigDialog::createTabs()
 {
@@ -30,34 +45,34 @@ void ConfigDialog::createTabs()
     chatConf = new ChatConfigWidget();
     proxyConf = new ProxyConfigWidget();
 
-    tabs->addTab(generalConf, QIcon(":/images/desktop.svg"), tr("General"));
-    tabs->addTab(chatConf,QIcon(":/images/users.svg"), tr("Chat"));
-    tabs->addTab(proxyConf, QIcon(":/images/web.svg"), tr("Proxy"));
-    tabs->addTab(new QLabel("TRANSFER SETTINGS GOES HERE"), QIcon(":/images/transfer.svg"), tr("Transfer"));
+    int tab;
+    tab = tabs->addTab(generalConf, QIcon(":/images/desktop.svg"), tr("General"));
+    tabs->setTabToolTip(tab, tr("General configuration"));
+    tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
+
+    tab = tabs->addTab(chatConf,QIcon(":/images/users.svg"), tr("Chat"));
+    tabs->setTabToolTip(tab, tr("Chat configuration"));
+    tabs->setTabWhatsThis(tab, tr("It's chat configuration!"));
+
+    tab = tabs->addTab(proxyConf, QIcon(":/images/web.svg"), tr("Proxy"));
+    tabs->setTabToolTip(tab, tr("Proxy configuration"));
+    tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
+
+    //tab = tabs->addTab(new QLabel("TRANSFER SETTINGS GOES HERE"), QIcon(":/images/transfer.svg"), tr("Transfer"));
+    //tabs->setTabToolTip(tab, tr("General configuration"));
+    //tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
+
 }
 
-void ConfigDialog::createButtons()
-{
-    QPushButton *apply;
-
-    buttonBox = new QDialogButtonBox();
-    buttonBox->addButton(tr("OK"), QDialogButtonBox::AcceptRole);
-    buttonBox->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
-    apply = buttonBox->addButton(tr("Apply"), QDialogButtonBox::ApplyRole);
-
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accepted()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejected()));
-    connect(apply, SIGNAL(clicked()), this, SLOT(applied()));
-}
 
 void ConfigDialog::layoutElements()
 {
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(tabs);
-    layout->addSpacing(10);
-    layout->addWidget(buttonBox);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addWidget(tabs);
+    vLayout->addSpacing(10);
+    vLayout->addWidget(buttons);
 
-    this->setLayout(layout);
+    this->setLayout(vLayout);
 }
 
 void ConfigDialog::accepted()
