@@ -19,7 +19,14 @@
 
 using namespace gloox;
 
-class XMPPMessaging : public XMPPClientExtension, MessageHandler, MessageSessionHandler
+/*
+ This class implements simple messaging
+ */
+class XMPPMessaging : public XMPPClientExtension,
+                             MessageHandler,
+                             MessageSessionHandler,
+                             MessageEventHandler,
+                             ChatStateHandler
 {
     Q_OBJECT
     struct Chat
@@ -30,29 +37,62 @@ class XMPPMessaging : public XMPPClientExtension, MessageHandler, MessageSession
     };
 
 public:
+    /*
+     Constructor and destructor
+     */
     XMPPMessaging();
+    virtual ~XMPPMessaging();
 
+    /*
+     Attach and detach client
+     */
     virtual void attachClient(Client *client);
     virtual void detachClient(Client *client);
 
+    /*
+     Begin or end messaging session
+     */
     void beginChat(const JID& target);
     void endChat(const JID& target);
+
 signals:
-    void chatMessageRecieved(const JID& target, const QString& msg);
+    /*
+     Something changed or recieved
+     */
+    void chatMessageRecieved(const JID& from, const QString& msg);
+    void chatMessageChanged(const JID& from, MessageEventType event);
+    void chatStateChanged(const JID& from, ChatStateType state);
 
 public slots:
-    void sendChatMessage(const JID& target, const QString& msg);
+    /*
+     Send something
+     */
+    void sendChatMessage(const JID& to, const QString& msg);
 
 protected:
-    /*  Overrides of MessageHandler */
+    /*
+     Overrides of MessageHandler
+    */
     virtual void handleMessage (const Message &msg, MessageSession *session=0);
-    /*  Overrides of MessageSessionHandler  */
+    /*
+     Overrides of MessageSessionHandler
+    */
     virtual void handleMessageSession (MessageSession *session);
+    /*
+     Overrides of MessageEventHandler
+    */
+    virtual void handleMessageEvent (const JID &from, MessageEventType event);
+    /*
+     Overrides of ChatStatehadler
+    */
+    virtual void handleChatState (const JID &from, ChatStateType state);
 
 private:
-    Client *m_client;
+    /*
+     Private field
+     */
+    Client*     m_client;
     QList<Chat> m_chats;
-
 };
 
 #endif // XMPPMESSAGING_H

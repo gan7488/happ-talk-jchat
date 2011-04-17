@@ -14,45 +14,86 @@
 
 using namespace gloox;
 
-class XMPPClient : public QObject, ConnectionListener
+/*
+ This class implements connection functions.
+ How to use:
+    1) call connect()
+    2) working
+    3) call disconnect()
+ */
+class XMPPClient : public QObject,
+                          ConnectionListener
 {
     Q_OBJECT
 public:
+    /*
+     Constructors and destructor.
+     */
     XMPPClient(const JID& jid, const QString& password, int port = -1);
     XMPPClient(const QString& server);
     virtual ~XMPPClient(void);
 
+    /*
+     Connection functions.
+     */
     void connect(void);
     void disconnect(void);
 
+    /*
+     Connection status.
+     */
     bool authed() const;
     ConnectionState state() const;
 
+    /*
+     Attach or detach client extensions.
+     */
     void attach(XMPPClientExtension* ext);
     void detach(XMPPClientExtension* ext);
+    XMPPClient& operator+=(XMPPClientExtension *ext) { attach(ext); return *this; }
+    XMPPClient& operator-=(XMPPClientExtension *ext) { detach(ext); return *this; }
 
+    /*
+     Proxies settings goes here.
+     */
     void setHTTPProxy(const QString& host, int port, const QString& user, const QString& pass);
     void setSOCKS5Proxy(const QString& host, int port, const QString& user, const QString& pass);
 
 signals:
+    /*
+     Connection Established
+     */
     void connected();
+    /*
+     Disconnected
+     */
     void disconnected(ConnectionError e);
 
 public slots:
 
 protected:
-    /*  Overrides of gloox::ConnectionListener  */
+    /*
+     Overrides of gloox::ConnectionListener
+     */
     virtual void onConnect();
     virtual void onDisconnect( ConnectionError e );
     virtual bool onTLSConnect( const CertInfo& info );
 
-    Client  *m_client;
-    QList<XMPPClientExtension *> m_extensions;
-
 private:
+    /*
+     Top Secret!
+     */
     void timerEvent(QTimerEvent */*event*/) { m_client->recv(0); }
 
-    int m_recvTimer;
+protected:
+    /*
+     Fields
+     */
+    QList<XMPPClientExtension *> m_extensions;
+
+    Client  *m_client;
+private:
+    int     m_recvTimer;
 };
 
 #endif // XMPPCLIENT_H

@@ -7,7 +7,6 @@
 #include "talksdialog.h"
 #include "configdialog.h"
 #include "logindialog.h"
-#include "xmpp/jclient.h"
 #include "consts.h"
 
 #include <QtGui>
@@ -170,10 +169,10 @@ void MainDialog::createMenus()
 
 void MainDialog::createWindows()
 {
-    about   = new AboutDialog(this);
-    config  = new ConfigDialog(this);
-    talks   = new TalksDialog(this);
-    login   = new LoginDialog(this);
+    about   = new AboutDialog();
+    config  = new ConfigDialog();
+    talks   = new TalksDialog();
+    login   = new LoginDialog();
 
     connect(login, SIGNAL(accepted()), this, SLOT(loginAccepted()));
 }
