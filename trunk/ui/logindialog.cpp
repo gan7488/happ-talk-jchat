@@ -6,7 +6,6 @@
 #include "consts.h"
 #include <QtGui>
 #include <QSvgWidget>
-#include "xmpp/jregisterclient.h"
 #include "xmpp/xmppregistration.h"
 
 LoginDialog::LoginDialog(QWidget *parent) :

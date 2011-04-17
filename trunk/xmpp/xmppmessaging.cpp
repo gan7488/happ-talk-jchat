@@ -5,20 +5,32 @@
 #include "xmppmessaging.h"
 #include <QDebug>
 
+/*
+ Constructor and destructor
+ */
 XMPPMessaging::XMPPMessaging() :
-    XMPPClientExtension()
+    XMPPClientExtension(), m_client(0)
 {
 }
 
+XMPPMessaging::~XMPPMessaging()
+{
+    detachClient(m_client);
+}
+
+/*
+ Attach and detach client
+ */
 void XMPPMessaging::attachClient(Client *client)
 {
+    if (!client) return;
     m_client = client;
     m_client->registerMessageHandler(this);
     m_client->registerMessageSessionHandler(this);
 }
 void XMPPMessaging::detachClient(Client *client)
 {
-    if (m_client == client)
+    if (m_client == client && client)
     {
         m_client->removeMessageHandler(this);
         m_client->registerMessageSessionHandler(0);
@@ -26,9 +38,12 @@ void XMPPMessaging::detachClient(Client *client)
     }
 }
 
+/*
+ Begin messaging
+ */
 void XMPPMessaging::beginChat(const JID &target)
 {
-    /*  bare jid more abstract than full  */
+    /*  bare jid more abstract than full?  */
     foreach(Chat chat, m_chats)
     {
         if (chat.session && chat.session->target() == target)
@@ -45,12 +60,17 @@ void XMPPMessaging::beginChat(const JID &target)
 
     chat.session->registerMessageHandler(this);
     chat.session->registerMessageFilter(chat.messageEventFilter);
+    chat.messageEventFilter->registerMessageEventHandler(this);
+    chat.chatStateFilter->registerChatStateHandler(this);
 
     m_chats.append(chat);
     qDebug() << "[beginChat] chat with jid " << target.full().c_str()
             << " was not founded. created." << m_chats.count() << " in chat list";
 }
 
+/*
+ End messaging
+ */
 void XMPPMessaging::endChat(const JID &target)
 {
     /*  search full jid  */
@@ -71,6 +91,10 @@ void XMPPMessaging::endChat(const JID &target)
     qDebug() << "[endChat] chat with jid " << target.full().c_str()
             << " was founded. disposed."<< m_chats.count() << " in chat list";
 }
+
+/*
+ Send message
+ */
 void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
 {
     beginChat(target);
@@ -78,7 +102,7 @@ void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
     {
         if (chat.session && chat.session->target() == target)
         {
-            chat.session->send(msg.toStdString());
+            chat.session->send(std::string(msg.toUtf8()));
             qDebug() << "message to " << target.full().c_str() << " was sended...";
             return;
         }
@@ -86,6 +110,9 @@ void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
     qDebug() << "message to " << target.full().c_str() << " was NOT sended...";
 }
 
+/*
+ Handlers
+ */
 void XMPPMessaging::handleMessage(const Message &msg, MessageSession *session)
 {
     emit chatMessageRecieved(msg.from(),QString::fromUtf8(msg.body().c_str()));
@@ -111,8 +138,20 @@ void XMPPMessaging::handleMessageSession(MessageSession *session)
 
     chat.session->registerMessageHandler(this);
     chat.session->registerMessageFilter(chat.messageEventFilter);
+    chat.messageEventFilter->registerMessageEventHandler(this);
+    chat.chatStateFilter->registerChatStateHandler(this);
 
     m_chats.append(chat);
     qDebug() << "[handleMessageSession] chat with jid " << session->target().full().c_str()
             << " was not founded. created." << m_chats.count() << " in chat list";
+}
+void XMPPMessaging::handleMessageEvent(const JID &from, MessageEventType event)
+{
+    qDebug() << "message event from " << from.full().c_str() << event;
+    emit chatMessageChanged(from, event);
+}
+void XMPPMessaging::handleChatState(const JID &from, ChatStateType state)
+{
+    qDebug() << "chat state from " << from.full().c_str() << state;
+    emit chatStateChanged(from, state);
 }

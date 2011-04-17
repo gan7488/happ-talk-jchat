@@ -5,6 +5,9 @@
 #include "xmppregistration.h"
 #include <QDebug>
 
+/*
+ Constructor and destructor
+ */
 XMPPRegistration::XMPPRegistration(const QString &server)
     : XMPPClient(server)
 {
@@ -19,6 +22,9 @@ XMPPRegistration::~XMPPRegistration()
     delete m_reg;
 }
 
+/*
+ Managing
+ */
 void XMPPRegistration::createAccount()
 {
     if (state() == StateDisconnected) return;
@@ -40,6 +46,9 @@ void XMPPRegistration::removeAccount()
     qDebug() << "remove account";
 }
 
+/*
+ RegistrationHandler methods goes here.
+ */
 void XMPPRegistration::handleRegistrationFields (const JID &, int fields, std::string)
 {
     qDebug() << "registration fields";
@@ -49,9 +58,10 @@ void XMPPRegistration::handleRegistrationFields (const JID &, int fields, std::s
     m_reg->createAccount( fields, vals );
 }
 
-void XMPPRegistration::handleAlreadyRegistered (const JID &)
+void XMPPRegistration::handleAlreadyRegistered (const JID & from)
 {
-
+    qDebug() << "alreadyRegistered";
+    emit accountAlreadyRegistered(from);
 }
 
 void XMPPRegistration::handleRegistrationResult (const JID &, RegistrationResult regResult)
@@ -61,10 +71,10 @@ void XMPPRegistration::handleRegistrationResult (const JID &, RegistrationResult
 
 void XMPPRegistration::handleDataForm (const JID &, const DataForm &)
 {
-
+    qDebug() << "dataForm recieved";
 }
 
 void XMPPRegistration::handleOOB (const JID &, const OOB &)
 {
-
+    qDebug() << "OOD recieved";
 }
