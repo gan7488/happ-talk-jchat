@@ -31,7 +31,7 @@ void XMPPRegistration::createAccount()
     m_reg->fetchRegistrationFields();
     qDebug() << "create account";
 }
-
+/*
 void XMPPRegistration::changePassword()
 {
     if (state() == StateDisconnected) return;
@@ -45,7 +45,7 @@ void XMPPRegistration::removeAccount()
     m_reg->removeAccount();
     qDebug() << "remove account";
 }
-
+*/
 /*
  RegistrationHandler methods goes here.
  */

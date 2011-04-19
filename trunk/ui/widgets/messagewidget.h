@@ -7,6 +7,12 @@
 
 #include <QTextEdit>
 
+/*
+ Widget for typing message.
+ TODO:
+    1) IntelliType (or something like that) :D
+    2) Draw smiles or not?
+ */
 class MessageWidget : public QTextEdit
 {
     Q_OBJECT
@@ -14,9 +20,10 @@ public:
     explicit MessageWidget(QWidget *parent = 0);
 
 signals:
-    void sendRequested();
-
-public slots:
+    /*
+     Signals
+     */
+    void accepted();
 
 protected:
     virtual void keyReleaseEvent(QKeyEvent *e);

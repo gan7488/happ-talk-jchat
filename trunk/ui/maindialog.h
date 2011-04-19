@@ -10,18 +10,17 @@
 #include <QSystemTrayIcon>
 #include "xmpp/xmppclient.h"
 #include "xmpp/xmppmessaging.h"
+#include "xmpp/xmpproster.h"
 
 
 class QMenu;
-class QTreeView;
+class QTreeWidget;
 class QPushButton;
 
 class LoginDialog;
 class AboutDialog;
 class ConfigDialog;
 class TalksDialog;
-
-class JClient;
 
 class MainDialog : public QDialog
 {
@@ -36,7 +35,6 @@ public slots:
     void showhide();
 
 protected:
-    void reject() {}
     void showEvent(QShowEvent *e);
     void closeEvent(QCloseEvent *e);
 
@@ -54,7 +52,7 @@ private:
     LoginDialog     *login;
     TalksDialog     *talks;
 
-    QTreeView *buddies;
+    QTreeWidget *buddies;
 
     QPushButton *top;
     QPushButton *right;
@@ -76,11 +74,13 @@ private:
 
     QSystemTrayIcon *trayIcon;
 
-    JClient* client;
-
     XMPPClient      *m_client;
     XMPPMessaging   *m_messaging;
+    XMPPRoster      *m_roster;
+
 private slots:
+    void rosterRecieved (const Roster &roster);
+
     void loginAccepted();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 

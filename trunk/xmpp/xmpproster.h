@@ -31,10 +31,6 @@ public:
     virtual void attachClient(Client *client);
     virtual void detachClient(Client *client);
 
-    /*
-     Roster manager
-     */
-    const RosterManager* roster() const { if (m_client) return m_client->rosterManager(); return 0; }
 signals:
     /*
      Signals
@@ -52,7 +48,6 @@ signals:
     void nonrosterPresence (const Presence &presence);
     void rosterError (const IQ &iq);
 
-public slots:
 protected:
     /*
      Overrides of gloox::RosterListener

@@ -7,6 +7,9 @@
 #include <QtGui>
 #include <QtSvg/QSvgWidget>
 
+/*
+ Constructors
+ */
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent)
 {
@@ -18,13 +21,16 @@ AboutDialog::AboutDialog(QWidget *parent) :
     layoutElements();
 }
 
+/*
+ Setup UI
+ */
 void AboutDialog::createElements()
 {
     about = new QTextEdit();
     about->setReadOnly(true);
-    int maj = (version >> 20) & 0xFF;
-    int min = (version >> 12) & 0xFF;
-    int build = version & 0xFFF;
+    int maj = major();
+    int min = minor();
+    int rev = build();
     about->setHtml(tr("<h2>%1 %2.%3.%4</h2>"
                        "<p style='font-size: 12px;'>Jchat is a messaging client based on libgloox. "
                        "Jchat is written in C++ using Qt. "
@@ -37,7 +43,7 @@ void AboutDialog::createElements()
                        "<h3>Testers:</h3>"
                        "<ul style='font-size: 12px;'><li>DEg</li>"
                        "<li>Un1c0rn</li>"
-                       "<li>Denzel</li></ul>").arg(app).arg(maj).arg(min).arg(build));
+                       "<li>Denzel</li></ul>").arg(app).arg(maj).arg(min).arg(rev));
 
     buttons = new QDialogButtonBox(Qt::Horizontal);
     buttons->addButton(tr("Help"), QDialogButtonBox::HelpRole);
@@ -45,15 +51,16 @@ void AboutDialog::createElements()
 
     connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttons, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
-
-    logo = new QSvgWidget();
-    logo->setFixedSize(130,150);
-    logo->load(QString(":/images/logo.svg"));
 }
 
 void AboutDialog::layoutElements()
 {
     QHBoxLayout *hLayout = new QHBoxLayout();
+
+    QSvgWidget *logo = new QSvgWidget();
+    logo->setFixedSize(130,150);
+    logo->load(QString(":/images/logo.svg"));
+
     hLayout->addWidget(logo);
     hLayout->addWidget(about);
 
@@ -65,6 +72,9 @@ void AboutDialog::layoutElements()
     setLayout(vLayout);
 }
 
+/*
+ Slots
+ */
 void AboutDialog::helpRequested()
 {
     QDesktopServices::openUrl(QUrl(url));

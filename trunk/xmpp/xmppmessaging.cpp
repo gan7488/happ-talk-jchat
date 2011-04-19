@@ -53,8 +53,18 @@ void XMPPMessaging::beginChat(const JID &target)
         }
     }
     /* jid not founded */
+    m_chats.append(createChat(new MessageSession(m_client, target)));
+    qDebug() << "[beginChat] chat with jid " << target.full().c_str()
+            << " was not founded. created." << m_chats.count() << " in chat list";
+}
+
+/*
+ Create chat
+ */
+XMPPMessaging::Chat XMPPMessaging::createChat(MessageSession *session)
+{
     Chat chat;
-    chat.session            = new MessageSession(m_client, target);
+    chat.session            = session;
     chat.messageEventFilter = new MessageEventFilter(chat.session);
     chat.chatStateFilter    = new ChatStateFilter(chat.session);
 
@@ -63,9 +73,7 @@ void XMPPMessaging::beginChat(const JID &target)
     chat.messageEventFilter->registerMessageEventHandler(this);
     chat.chatStateFilter->registerChatStateHandler(this);
 
-    m_chats.append(chat);
-    qDebug() << "[beginChat] chat with jid " << target.full().c_str()
-            << " was not founded. created." << m_chats.count() << " in chat list";
+    return chat;
 }
 
 /*
@@ -93,7 +101,7 @@ void XMPPMessaging::endChat(const JID &target)
 }
 
 /*
- Send message
+ Send message or change smth.
  */
 void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
 {
@@ -108,6 +116,34 @@ void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
         }
     }
     qDebug() << "message to " << target.full().c_str() << " was NOT sended...";
+}
+
+void XMPPMessaging::changeMessageEvent(const JID& to, MessageEventType event)
+{
+    foreach(Chat chat, m_chats)
+    {
+        if (chat.session && chat.session->target() == to)
+        {
+            chat.messageEventFilter->raiseMessageEvent(event);
+            qDebug() << "message event " << to.full().c_str() << " was changed...";
+            return;
+        }
+    }
+    qDebug() << "message event " << to.full().c_str() << " was NOT changed...";
+}
+
+void XMPPMessaging::changeChatState(const JID& to, ChatStateType state)
+{
+    foreach(Chat chat, m_chats)
+    {
+        if (chat.session && chat.session->target() == to)
+        {
+            chat.chatStateFilter->setChatState(state);
+            qDebug() << "chat state " << to.full().c_str() << " was changed...";
+            return;
+        }
+    }
+    qDebug() << "chat state " << to.full().c_str() << " was NOT changed...";
 }
 
 /*
@@ -131,17 +167,7 @@ void XMPPMessaging::handleMessageSession(MessageSession *session)
     }
 
     /* jid not founded */
-    Chat chat;
-    chat.session            = session;
-    chat.messageEventFilter = new MessageEventFilter(chat.session);
-    chat.chatStateFilter    = new ChatStateFilter(chat.session);
-
-    chat.session->registerMessageHandler(this);
-    chat.session->registerMessageFilter(chat.messageEventFilter);
-    chat.messageEventFilter->registerMessageEventHandler(this);
-    chat.chatStateFilter->registerChatStateHandler(this);
-
-    m_chats.append(chat);
+    m_chats.append(createChat(session));
     qDebug() << "[handleMessageSession] chat with jid " << session->target().full().c_str()
             << " was not founded. created." << m_chats.count() << " in chat list";
 }

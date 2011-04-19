@@ -9,29 +9,35 @@
 
 class QComboBox;
 class QLabel;
-class QSvgWidget;
 
+/*
+ Configuration dialog. General configuration section.
+ */
 class GeneralConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit GeneralConfigWidget(QWidget *parent = 0);
 
+public slots:
+    /*
+     Slots
+     */
     void load();
     void save();
 
-signals:
-
-public slots:
 private:
+    /*
+     Setup UI
+     */
     void createElements();
     void layoutElements();
 
-    QSvgWidget *pic;
-
+    /*
+     Elements
+     */
     QComboBox *lang;
     QComboBox *style;
-
 };
 
 #endif // GENERALCONFIGWIDGET_H

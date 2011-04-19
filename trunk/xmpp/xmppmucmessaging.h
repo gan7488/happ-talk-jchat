@@ -32,9 +32,6 @@ public:
     virtual void attachClient(Client *client);
     virtual void detachClient(Client *client);
 
-signals:
-
-public slots:
 protected:
     /*
      Overrides of gloox::MUCRoomHandler

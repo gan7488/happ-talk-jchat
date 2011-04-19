@@ -23,17 +23,17 @@ void TalkWidget::createTexts()
 
     message = new MessageWidget();
     message->setFixedHeight(70);
-    connect(message, SIGNAL(sendRequested()), this, SLOT(sendMessage()));
+    connect(message, SIGNAL(accepted()), this, SLOT(sendMessage()));
 }
 void TalkWidget::messageReceived(const QString &msg)
 {
-    story->append(msg);
+    story->append(QString("(%1)%2: %3").arg(QTime::currentTime().toString()).arg(QString::fromStdString(m_jid.username())).arg(msg));
 }
 
 void TalkWidget::sendMessage()
 {
-    story->append(message->toHtml());
-    emit sendMessage(jid, message->toPlainText());
+    story->append(QString("(%1)I: %2").arg(QTime::currentTime().toString()).arg(message->toPlainText()));
+    emit sendMessage(m_jid, message->toPlainText());
     message->clear();
 }
 

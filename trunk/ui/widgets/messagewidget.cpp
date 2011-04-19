@@ -13,5 +13,5 @@ MessageWidget::MessageWidget(QWidget *parent) :
 void MessageWidget::keyReleaseEvent(QKeyEvent *e)
 {
     if (e->modifiers() == Qt::ControlModifier && e->key() == Qt::Key_Return)
-        emit sendRequested();
+        emit accepted();
 }

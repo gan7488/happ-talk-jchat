@@ -8,11 +8,12 @@
 #include <QSvgWidget>
 #include "xmpp/xmppregistration.h"
 
+/*
+ Constructors
+ */
 LoginDialog::LoginDialog(QWidget *parent) :
         QDialog(parent), reg(0)
 {
-    //this->setFixedSize(310, 215);
-    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     this->setWindowTitle(tr("Login"));
     this->setWindowIcon(QIcon(":/images/lock.svg"));
 
@@ -22,6 +23,9 @@ LoginDialog::LoginDialog(QWidget *parent) :
     this->setFixedSize(sizeHint());
 }
 
+/*
+ Events
+ */
 void LoginDialog::showEvent(QShowEvent *e)
 {
     QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
@@ -31,12 +35,15 @@ void LoginDialog::showEvent(QShowEvent *e)
     QDialog::showEvent(e);
 }
 
+/*
+ Setup UI
+ */
 void LoginDialog::createElements()
 {
     uname   = new QLineEdit();
     serv    = new QLineEdit();
     pass    = new QLineEdit();
-    pass->setEchoMode(QLineEdit::Password);
+    pass->setEchoMode(QLineEdit::PasswordEchoOnEdit);
 
     join = new QCheckBox(tr("Create account"));
 
@@ -76,6 +83,9 @@ void LoginDialog::layoutElements()
     this->setLayout(layout);
 }
 
+/*
+ Slots
+ */
 void LoginDialog::accepted()
 {
     if (join->checkState() != Qt::Checked)
@@ -94,8 +104,8 @@ void LoginDialog::accepted()
         this->accept();
         return;
     }
-    //@todo complete
     qDebug() << "join";
+
     if (serv->text().isEmpty())
     {
         QMessageBox::information(this,
@@ -103,33 +113,40 @@ void LoginDialog::accepted()
                                  tr("Type server name"), QMessageBox::Ok);
         return;
     }
-    //JRegisterClient reg;
-    //reg.createAccount("jabber.uruchie.org");
+
+    if (reg) delete reg;
     reg = new XMPPRegistration(server());
+
+    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+                       qApp->organizationName(), qApp->applicationName());
+
+    QString proxy = settings.value("proxy/type", "none").toString().toLower();
+    int port = settings.value("proxy/port", "-1").toInt();
+
+    if (proxy == "socks5")
+        reg->setSOCKS5Proxy(settings.value("proxy/host").toString(), port,
+                            settings.value("proxy/user").toString(),
+                            settings.value("proxy/pass").toString());
+    else if (proxy == "http")
+        reg->setHTTPProxy(settings.value("proxy/host").toString(), port,
+                            settings.value("proxy/user").toString(),
+                            settings.value("proxy/pass").toString());
+
     reg->setUsername(username());
     reg->setPassword(password());
-    reg->connect();
+
     connect(reg, SIGNAL(connected()), this, SLOT(connected()));
+    connect(reg, SIGNAL(disconnected(ConnectionError)),
+            this, SLOT(disconnected(ConnectionError)));
     connect(reg,SIGNAL(registrationCompleted(RegistrationResult)),
             this, SLOT(registrationCompleted(RegistrationResult)));
+
+    reg->connect();
 }
 
 void LoginDialog::rejected()
 {
     this->reject();
-}
-
-const QString LoginDialog::username() const
-{
-    return uname->text();
-}
-const QString LoginDialog::server() const
-{
-    return serv->text();
-}
-const QString LoginDialog::password() const
-{
-    return pass->text();
 }
 
 void LoginDialog::connected()
@@ -139,7 +156,8 @@ void LoginDialog::connected()
 
 void LoginDialog::disconnected(ConnectionError e)
 {
-
+    if (e != ConnUserDisconnected)
+        QMessageBox::information(this, tr("Some troubles here!"), tr("Disconnected"));
 }
 
 void LoginDialog::registrationCompleted(RegistrationResult r)
@@ -147,7 +165,7 @@ void LoginDialog::registrationCompleted(RegistrationResult r)
     reg->disconnect();
     if (r == RegistrationSuccess)
     {
-        QMessageBox::information(this, tr("SUCCESS!"), tr("Registration succesfully completed"));
+        QMessageBox::information(this, tr("Success!"), tr("Registration succesfully completed"));
         join->setChecked(false);
     }
     else
