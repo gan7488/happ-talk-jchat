@@ -8,19 +8,18 @@
 #include "configdialog.h"
 #include "logindialog.h"
 #include "consts.h"
+#include <gloox/rosteritem.h>
 
 #include <QtGui>
 
 MainDialog::MainDialog(QWidget *parent) :
         QDialog(parent), m_client(0), m_messaging(0)
 {
-    //client = new JClient(JID("jchat@jabber.uruchie.org"), QString("test"));
-    //client->connect();
-
     this->setMinimumSize(250, 400);
     this->setMaximumWidth(400);
     this->setWindowTitle(tr("Jchat : Talkers"));
     this->setWindowIcon(QIcon(":/images/logo.svg"));
+
     createTree();
     createButtons();
     layoutElements();
@@ -29,8 +28,6 @@ MainDialog::MainDialog(QWidget *parent) :
     createMenus();
     createTrayIcon();
     trayIcon->setVisible(true);
-    //client = 0;
-    //client = new JClient(JID("jchat@jabber.uruchie.org"), QString());
 }
 
 MainDialog::~MainDialog()
@@ -81,7 +78,7 @@ void MainDialog::closeEvent(QCloseEvent *e)
 
 void MainDialog::createTree()
 {
-    buddies = new QTreeView();
+    buddies = new QTreeWidget();
 }
 
 void MainDialog::createButtons()
@@ -222,8 +219,29 @@ void MainDialog::loginAccepted()
     jid.setUsername(login->username().toStdString());
     jid.setServer(login->server().toStdString());
     m_client = new XMPPClient(jid, login->password());
+
+    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+                       qApp->organizationName(), qApp->applicationName());
+
+    QString proxy = settings.value("proxy/type", "none").toString().toLower();
+    int port = settings.value("proxy/port", "-1").toInt();
+
+    if (proxy == "socks5")
+        m_client->setSOCKS5Proxy(settings.value("proxy/host").toString(), port,
+                            settings.value("proxy/user").toString(),
+                            settings.value("proxy/pass").toString());
+    else if (proxy == "http")
+        m_client->setHTTPProxy(settings.value("proxy/host").toString(), port,
+                            settings.value("proxy/user").toString(),
+                            settings.value("proxy/pass").toString());
+
     m_messaging = new XMPPMessaging();
-    m_client->attach(m_messaging);
+    m_roster = new XMPPRoster();
+    connect(m_roster, SIGNAL(rosterRecieved(Roster)), this, SLOT(rosterRecieved(Roster)));
+
+    *m_client += m_messaging;
+    *m_client += m_roster;
+
     m_client->connect();
     talks->setMessaging(m_messaging);
 }
@@ -259,7 +277,7 @@ void MainDialog::aboutActionTriggered()
 }
 void MainDialog::aboutQtActionTriggered()
 {
-    QMessageBox::aboutQt(this, tr("About Qt"));
+    qApp->aboutQt();
 }
 
 void MainDialog::quitActionTriggered()
@@ -287,3 +305,14 @@ void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
          ;
      }
  }
+
+void MainDialog::rosterRecieved (const Roster &roster)
+{
+    std::map<const std::string, RosterItem*>::const_iterator i = roster.begin();
+    for(; i != roster.end(); i++)
+    {
+
+        buddies->addTopLevelItem(new QTreeWidgetItem(QStringList(QString::fromStdString(i->first))));
+
+    }
+}

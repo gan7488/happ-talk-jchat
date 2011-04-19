@@ -7,26 +7,32 @@
 
 #include <QWidget>
 
-class QSvgWidget;
-
+/*
+ Configuration. Chat configuration section.
+ */
 class ChatConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit ChatConfigWidget(QWidget *parent = 0);
 
+public slots:
+    /*
+     Slots
+     */
     void load();
     void save();
 
-signals:
-
-public slots:
 private:
+    /*
+     Setup UI
+     */
     void createElements();
     void layoutElements();
 
-    QSvgWidget *pic;
-
+    /*
+     Elements
+     */
 };
 
 #endif // CHATCONFIGWIDGET_H

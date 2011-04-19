@@ -8,7 +8,6 @@
 #include <gloox/connectionhttpproxy.h>
 #include <gloox/connectionsocks5proxy.h>
 #include <gloox/disco.h>
-#include "consts.h"
 
 /*
  Constructors and destructor.
@@ -18,17 +17,21 @@ XMPPClient::XMPPClient(const JID &jid, const QString &password, int port)
     m_client = new Client(jid, password.toStdString(), port);
     m_client->registerConnectionListener(this);
 
-    m_client->disco()->setVersion( app.toStdString(), "alfa");
-    m_client->disco()->setIdentity( "client", "im" );
+    setInfo();
 }
 XMPPClient::XMPPClient(const QString &server)
 {
     m_client = new Client(server.toStdString());
     m_client->registerConnectionListener(this);
 
-    m_client->disco()->setVersion( app.toStdString(), "alfa");
+    setInfo();
+}
+void XMPPClient::setInfo()
+{
+    m_client->disco()->setVersion( "proto-xmpp-core", "alfa");
     m_client->disco()->setIdentity( "client", "im" );
 }
+
 /*
  Delete or detach extensions here?
  */
@@ -36,10 +39,8 @@ XMPPClient::~XMPPClient(void)
 {
     disconnect();
     foreach(XMPPClientExtension *ext, m_extensions)
-    {
-        delete ext;
-    }
-    if (m_client != 0)
+        if (ext) delete ext;
+    if (m_client)
         delete m_client;
 }
 
@@ -59,12 +60,10 @@ void XMPPClient::disconnect(void)
 }
 bool XMPPClient::authed() const
 {
-    if (m_client == 0) return false;
     return m_client->authed();
 }
 ConnectionState XMPPClient::state() const
 {
-    if (m_client == 0) return StateDisconnected;
     return m_client->state();
 }
 /*

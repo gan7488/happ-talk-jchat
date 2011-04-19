@@ -47,16 +47,20 @@ public slots:
         connect connected() with one of this functions
      */
     void createAccount();
+    /*
+     Move out, it doesn't work here
+     */
+    /*
     void changePassword();
     void removeAccount();
-
+    */
 signals:
     /*
      Registration completed.
      */
     void registrationCompleted(RegistrationResult);
     /*
-     Already existed
+     Already registered
      */
     void accountAlreadyRegistered(const JID& from);
 

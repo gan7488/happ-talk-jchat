@@ -17,6 +17,9 @@ class QString;
 
 using namespace gloox;
 
+/*
+ Chats, Rooms, Rooms Settings
+ */
 class TalksDialog : public QDialog
 {
     Q_OBJECT
@@ -24,33 +27,43 @@ public:
     explicit TalksDialog(QWidget *parent = 0);
 
     void setMessaging(XMPPMessaging *messaging);
-signals:
 
+    /*
+     Slots
+     */
 public slots:
     void messageRecieved(const JID &from, const QString &msg);
 
-protected:
-    void showEvent(QShowEvent *e);
-    void closeEvent(QCloseEvent *e);
-
-private:
-    void createTabs();
-    void layoutElements();
-
-    QTabWidget *tabs;
-    QTabWidget *rooms;
-    QTabWidget *talks;
-    QTabWidget *advanced;
-
-    //QMap<JID, QWidget*> openedTalks;
-    QList<TalkWidget *> talkWidgets;
-    XMPPMessaging *client;
 private slots:
     TalkWidget* newTalk(const JID &target);
 
     void closeRoom(int index);
     void closeTalk(int index);
 
+protected:
+    /*
+     Events
+     */
+    void showEvent(QShowEvent *e);
+    void closeEvent(QCloseEvent *e);
+
+private:
+    /*
+     Setup UI
+     */
+    void createTabs();
+    void layoutElements();
+
+    /*
+     Elements
+     */
+    QTabWidget *tabs;
+    QTabWidget *rooms;
+    QTabWidget *talks;
+    QTabWidget *advanced;
+
+    QList<TalkWidget *> talkWidgets;
+    XMPPMessaging *client;
 };
 
 #endif // TALKSDIALOG_H

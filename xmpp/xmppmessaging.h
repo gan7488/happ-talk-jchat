@@ -65,29 +65,32 @@ signals:
 
 public slots:
     /*
-     Send something
+     Send something or change smth.
      */
     void sendChatMessage(const JID& to, const QString& msg);
+    void changeMessageEvent(const JID& to, MessageEventType event);
+    void changeChatState(const JID& to, ChatStateType state);
 
 protected:
     /*
      Overrides of MessageHandler
-    */
+     */
     virtual void handleMessage (const Message &msg, MessageSession *session=0);
     /*
      Overrides of MessageSessionHandler
-    */
+     */
     virtual void handleMessageSession (MessageSession *session);
     /*
      Overrides of MessageEventHandler
-    */
+     */
     virtual void handleMessageEvent (const JID &from, MessageEventType event);
     /*
      Overrides of ChatStatehadler
-    */
+     */
     virtual void handleChatState (const JID &from, ChatStateType state);
 
 private:
+    Chat createChat(MessageSession *session);
     /*
      Private field
      */

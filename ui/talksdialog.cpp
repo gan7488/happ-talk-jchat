@@ -9,6 +9,9 @@
 #include "widgets/roominfowidget.h"
 #include <QtGui>
 
+/*
+ Constructors
+ */
 TalksDialog::TalksDialog(QWidget *parent) :
     QDialog(parent)
 {
@@ -26,6 +29,9 @@ void TalksDialog::setMessaging(XMPPMessaging *messaging)
     connect(client, SIGNAL(chatMessageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
 }
 
+/*
+ Events
+ */
 void TalksDialog::showEvent(QShowEvent *e)
 {
     QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);

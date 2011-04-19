@@ -1,9 +1,7 @@
 /******************************************************************************
 **	Author: Svirskiy Sergey			Nickname: Happ
 ******************************************************************************/
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//  DO IT!
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 #ifndef TALKWIDGET_H
 #define TALKWIDGET_H
 
@@ -17,25 +15,56 @@ class QWidget;
 
 using namespace gloox;
 
+/*
+ History goes here.
+ Message typing goes here.
+ User info goes here.
+ */
 class TalkWidget : public QWidget
 {
     Q_OBJECT
 public:
+    /*
+     Constructor
+     */
     explicit TalkWidget(QWidget *parent = 0, QWidget *info = 0);
 
-    void setTarget(const JID &target) { jid = target; }
-    JID target() { return jid; }
+    /*
+     Target
+     */
+    void setTarget(const JID &target) { m_jid = target; }
+    JID target() { return m_jid; }
+
 signals:
+    /*
+     Send message
+     */
     void sendMessage(const JID& target, const QString &msg);
+
 public slots:
+    /*
+     Message recieved
+     */
     void messageReceived(const QString &msg);
+
+private slots:
+    void sendMessage();
+
 private:
-    void createTexts();
+    /*
+     Setup UI
+     */
+    void createElements();
     void createButtons();
+    void createTexts();
     void layoutElements();
 
-    JID jid;
-    QTextEdit *story;
+    /*
+     Elements
+     */
+    JID         m_jid;
+
+    QTextEdit     *story;
     MessageWidget *message;
 
     QPushButton *send;
@@ -49,10 +78,7 @@ private:
 
     QPushButton *clear;
 
-    QWidget *info;
-
-private slots:
-    void sendMessage();
+    QWidget     *info;
 };
 
 #endif // TALKWIDGET_H

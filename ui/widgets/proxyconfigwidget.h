@@ -8,39 +8,43 @@
 #include <QWidget>
 
 class QComboBox;
-class QFormLayout;
 class QLineEdit;
-class QSvgWidget;
 
+/*
+ Configaration dialog. Proxy configuration section.
+ */
 class ProxyConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit ProxyConfigWidget(QWidget *parent = 0);
 
-
+public slots:
+    /*
+     Slots
+     */
     void load();
     void save();
-signals:
 
-public slots:
+private slots:
+    void proxyTypeChanged ( int index );
+
 private:
+    /*
+     Setup UI
+     */
     void createElements();
     void layoutElements();
 
+    /*
+     Elements
+     */
     QComboBox *proxyType;
-
-    QFormLayout *proxyConf;
 
     QLineEdit *proxyHost;
     QLineEdit *proxyPort;
     QLineEdit *proxyUser;
     QLineEdit *proxyPass;
-
-    QSvgWidget *pic;
-private slots:
-    void proxyTypeChanged ( int index );
-
 };
 
 #endif // PROXYCONFIGWIDGET_H

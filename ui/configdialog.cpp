@@ -8,6 +8,9 @@
 #include "widgets/proxyconfigwidget.h"
 #include <QtGui>
 
+/*
+ Constructors
+ */
 ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent)
 {
@@ -15,9 +18,27 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     this->setWindowTitle(tr("Configuration"));
     this->setWindowIcon(QIcon(":/images/preferences.svg"));
 
+    createElements();
+    layoutElements();
+}
+
+/*
+ Show event
+ */
+void ConfigDialog::showEvent(QShowEvent *)
+{
+    generalConf->load();
+    chatConf->load();
+    proxyConf->load();
+}
+
+/*
+ Setup UI
+ */
+void ConfigDialog::createElements()
+{
     createButtons();
     createTabs();
-    layoutElements();
 }
 
 void ConfigDialog::createButtons()
@@ -48,22 +69,21 @@ void ConfigDialog::createTabs()
     int tab;
     tab = tabs->addTab(generalConf, QIcon(":/images/desktop.svg"), tr("General"));
     tabs->setTabToolTip(tab, tr("General configuration"));
-    tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
+    tabs->setTabWhatsThis(tab, generalConf->whatsThis());
 
     tab = tabs->addTab(chatConf,QIcon(":/images/users.svg"), tr("Chat"));
     tabs->setTabToolTip(tab, tr("Chat configuration"));
-    tabs->setTabWhatsThis(tab, tr("It's chat configuration!"));
+    tabs->setTabWhatsThis(tab, chatConf->whatsThis());
 
     tab = tabs->addTab(proxyConf, QIcon(":/images/web.svg"), tr("Proxy"));
     tabs->setTabToolTip(tab, tr("Proxy configuration"));
-    tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
+    tabs->setTabWhatsThis(tab, proxyConf->whatsThis());
 
     //tab = tabs->addTab(new QLabel("TRANSFER SETTINGS GOES HERE"), QIcon(":/images/transfer.svg"), tr("Transfer"));
     //tabs->setTabToolTip(tab, tr("General configuration"));
     //tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
 
 }
-
 
 void ConfigDialog::layoutElements()
 {
@@ -75,19 +95,23 @@ void ConfigDialog::layoutElements()
     this->setLayout(vLayout);
 }
 
+/*
+ Slots
+ */
 void ConfigDialog::accepted()
 {
-    //TODO save & apply
+    applied();
     accept();
 }
 
 void ConfigDialog::applied()
 {
-    //TODO apply
+    generalConf->save();
+    chatConf->save();
+    proxyConf->save();
 }
 
 void ConfigDialog::rejected()
 {
-    //TODO reject
     reject();
 }

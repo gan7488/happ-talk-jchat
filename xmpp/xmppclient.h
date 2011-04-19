@@ -50,8 +50,8 @@ public:
      */
     void attach(XMPPClientExtension* ext);
     void detach(XMPPClientExtension* ext);
-    XMPPClient& operator+=(XMPPClientExtension *ext) { attach(ext); return *this; }
-    XMPPClient& operator-=(XMPPClientExtension *ext) { detach(ext); return *this; }
+    void operator+=(XMPPClientExtension *ext) { attach(ext); }
+    void operator-=(XMPPClientExtension *ext) { detach(ext); }
 
     /*
      Proxies settings goes here.
@@ -59,17 +59,19 @@ public:
     void setHTTPProxy(const QString& host, int port, const QString& user, const QString& pass);
     void setSOCKS5Proxy(const QString& host, int port, const QString& user, const QString& pass);
 
+    /*
+     Roster manager
+     */
+    RosterManager* roster() const { return m_client->rosterManager(); }
 signals:
     /*
-     Connection Established
+     Occurs when connection established.
      */
     void connected();
     /*
-     Disconnected
+     Occurs when connection was disconnected.
      */
     void disconnected(ConnectionError e);
-
-public slots:
 
 protected:
     /*
@@ -84,6 +86,7 @@ private:
      Top Secret!
      */
     void timerEvent(QTimerEvent */*event*/) { m_client->recv(0); }
+    inline void setInfo();
 
 protected:
     /*
