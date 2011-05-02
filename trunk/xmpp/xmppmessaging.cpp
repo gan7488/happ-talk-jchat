@@ -46,7 +46,7 @@ void XMPPMessaging::beginChat(const JID &target)
     /*  bare jid more abstract than full?  */
     foreach(Chat chat, m_chats)
     {
-        if (chat.session && chat.session->target() == target)
+        if (chat.session && chat.session->target().bareJID() == target.bareJID())
         {
             qDebug() << "[beginChat] chat with jid " << target.full().c_str() << " was founded";
             return;
@@ -108,7 +108,7 @@ void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
     beginChat(target);
     foreach(Chat chat, m_chats)
     {
-        if (chat.session && chat.session->target() == target)
+        if (chat.session && chat.session->target().bareJID() == target.bareJID())
         {
             chat.session->send(std::string(msg.toUtf8()));
             qDebug() << "message to " << target.full().c_str() << " was sended...";

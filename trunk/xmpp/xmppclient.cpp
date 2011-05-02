@@ -40,8 +40,8 @@ XMPPClient::~XMPPClient(void)
     disconnect();
     foreach(XMPPClientExtension *ext, m_extensions)
         if (ext) delete ext;
-    if (m_client)
-        delete m_client;
+    //if (m_client)
+     //   delete m_client;
 }
 
 /*
@@ -55,7 +55,7 @@ void XMPPClient::connect(void)
 }
 void XMPPClient::disconnect(void)
 {
-    qDebug() << "disconneect";
+    qDebug() << "disconnect";
     m_client->disconnect();
 }
 bool XMPPClient::authed() const

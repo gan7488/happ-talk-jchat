@@ -8,9 +8,13 @@
 #include "configdialog.h"
 #include "logindialog.h"
 #include "consts.h"
+#include "useritem.h"
 #include <gloox/rosteritem.h>
 
 #include <QtGui>
+#include <QListWidget>
+
+#include <QStringList>
 
 MainDialog::MainDialog(QWidget *parent) :
         QDialog(parent), m_client(0), m_messaging(0)
@@ -20,7 +24,8 @@ MainDialog::MainDialog(QWidget *parent) :
     this->setWindowTitle(tr("Jchat : Talkers"));
     this->setWindowIcon(QIcon(":/images/logo.svg"));
 
-    createTree();
+    //createTree();
+    createUserList();
     createButtons();
     layoutElements();
     createWindows();
@@ -32,6 +37,11 @@ MainDialog::MainDialog(QWidget *parent) :
 
 MainDialog::~MainDialog()
 {
+    if (m_client)
+    {
+        //m_client->disconnect();
+        delete m_client;
+    }
     delete about;
     delete config;
     delete talks;
@@ -76,9 +86,19 @@ void MainDialog::closeEvent(QCloseEvent *e)
     e->ignore();
 }
 
-void MainDialog::createTree()
+/*void MainDialog::createTree()
 {
     buddies = new QTreeWidget();
+}
+*/
+
+void MainDialog::createUserList()
+{
+    userList = new QListWidget();
+
+    UserItem* userListDelegate = new UserItem();
+    userList->setItemDelegate(userListDelegate);
+    connect(userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(userListClicked(QListWidgetItem*)));
 }
 
 void MainDialog::createButtons()
@@ -105,24 +125,33 @@ void MainDialog::createActions()
     QAction *stat;
 
     stat = new QAction(QIcon(":/images/status-avaliable.svg") , tr("Avaliable"), this);
-    connect(stat, SIGNAL(triggered()), this, SLOT(status()));
+    connect(stat, SIGNAL(triggered()), this, SLOT(setAvailableStatus()));
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-away.svg") , tr("Away"), this);
-    connect(stat, SIGNAL(triggered()), this, SLOT(status()));
+    connect(stat, SIGNAL(triggered()), this, SLOT(setAwayStatus()));
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-dnd.svg") , tr("Do Not Disturbed"), this);
-    connect(stat, SIGNAL(triggered()), this, SLOT(status()));
+    connect(stat, SIGNAL(triggered()), this, SLOT(setDNDStatus()));
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-invisible.svg") , tr("Invisible"), this);
-    connect(stat, SIGNAL(triggered()), this, SLOT(status()));
+    connect(stat, SIGNAL(triggered()), this, SLOT(setInvisibleStatus()));
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-offline.svg") , tr("Offline"), this);
-    connect(stat, SIGNAL(triggered()), this, SLOT(status()));
+    connect(stat, SIGNAL(triggered()), this, SLOT(setOfflineStatus()));
     statusActions.append(stat);
+
+    beginTalkAction = new QAction(QIcon(":/images/info.svg"), tr("New talk"), this);
+    connect(beginTalkAction, SIGNAL(triggered()), this, SLOT(beginTalk()));
+
+    subscribeAction = new QAction(tr("Subscribe"), this);
+    connect(subscribeAction, SIGNAL(triggered()), this, SLOT(subscribeActionTriggered()));
+
+    unsubscribeAction = new QAction(tr("Unsubscribe"), this);
+    connect(unsubscribeAction, SIGNAL(triggered()), this, SLOT(unsubscribeActionTriggered()));
 
 
     configAction = new QAction(QIcon(":/images/preferences.svg"), tr("Preferences"), this);
@@ -140,6 +169,16 @@ void MainDialog::createActions()
     quitAction = new QAction(QIcon(":/images/exit.svg"), tr("Quit"), this);
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     connect(quitAction, SIGNAL(triggered()), this, SLOT(quitActionTriggered()));
+
+    addItemAction = new QAction(tr("Add item"), this);
+    connect(addItemAction, SIGNAL(triggered()), this, SLOT(addItemTriggered()));
+
+    removeItemAction = new QAction(tr("Remove item"), this);
+    connect(removeItemAction, SIGNAL(triggered()), this, SLOT(removeItemTriggered()));
+/*
+    imAction = new QAction(QIcon(":/images/info.svg"), tr("Begin talk"), this);
+    connect(imAction, SIGNAL(triggered()), this, SLOT(imActionTriggere()));
+*/
 }
 
 void MainDialog::createMenus()
@@ -150,6 +189,18 @@ void MainDialog::createMenus()
     statusMenu->addActions(statusActions);
 
     menu->addMenu(statusMenu);
+    menu->addSeparator();
+    menu->addAction(beginTalkAction);
+    menu->addSeparator();
+
+    QMenu *subMenu = new QMenu(tr("Managing"));
+    subMenu->addAction(subscribeAction);
+    subMenu->addAction(addItemAction);
+    subMenu->addSeparator();
+    subMenu->addAction(unsubscribeAction);
+    subMenu->addAction(removeItemAction);
+
+    menu->addMenu(subMenu);
     menu->addSeparator();
     menu->addAction(configAction);
     menu->addAction(aboutAction);
@@ -162,6 +213,16 @@ void MainDialog::createMenus()
 
     left->setMenu(menu);
     right->setMenu(statusMenu);
+
+    /*userListMenu = new QMenu();
+    userListMenu->addAction(imAction);
+    userListMenu->addSeparator();
+    userListMenu->addAction(subscribeAction);
+    userListMenu->addAction(addItemAction);
+    userListMenu->addSeparator();
+    userListMenu->addAction(unsubscribeAction);
+    userListMenu->addAction(removeItemAction);
+*/
 }
 
 void MainDialog::createWindows()
@@ -206,7 +267,8 @@ void MainDialog::layoutElements()
     hLayout->addWidget(right);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(buddies);
+    //layout->addWidget(buddies);
+    layout->addWidget(userList);
     layout->addSpacing(10);
     layout->addLayout(hLayout);
 
@@ -218,6 +280,12 @@ void MainDialog::loginAccepted()
     JID jid;
     jid.setUsername(login->username().toStdString());
     jid.setServer(login->server().toStdString());
+    jid.setResource("jchat");
+    if (m_client)
+    {
+        delete m_client;
+        m_client = 0;
+    }
     m_client = new XMPPClient(jid, login->password());
 
     QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
@@ -237,6 +305,17 @@ void MainDialog::loginAccepted()
 
     m_messaging = new XMPPMessaging();
     m_roster = new XMPPRoster();
+    connect(m_client, SIGNAL(disconnected(ConnectionError)), this, SLOT(disconnected(ConnectionError)));
+    connect(m_roster, SIGNAL(itemAdded(JID)), this, SLOT(itemAdded(JID)));
+    connect(m_roster, SIGNAL(itemRemoved(JID)), this, SLOT(itemRemoved(JID)));
+    connect(m_roster, SIGNAL(itemUpdated(JID)), this, SLOT(itemUpdated(JID)));
+
+    connect(m_roster, SIGNAL(itemSubscribed(JID)), this, SLOT(itemSubscribed(JID)));
+    connect(m_roster, SIGNAL(itemUnsubscribed(JID)), this, SLOT(itemUnsubscribed(JID)));
+
+    connect(m_roster, SIGNAL(rosterPresence(RosterItem,QString,Presence::PresenceType,QString)),
+            this, SLOT(rosterPresence(RosterItem,QString,Presence::PresenceType,QString)));
+
     connect(m_roster, SIGNAL(rosterRecieved(Roster)), this, SLOT(rosterRecieved(Roster)));
 
     *m_client += m_messaging;
@@ -286,11 +365,6 @@ void MainDialog::quitActionTriggered()
     qApp->quit();
 }
 
-void MainDialog::status()
-{
-    qDebug() << "change status";
-}
-
 void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
  {
      switch (reason) {
@@ -308,11 +382,272 @@ void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 void MainDialog::rosterRecieved (const Roster &roster)
 {
-    std::map<const std::string, RosterItem*>::const_iterator i = roster.begin();
-    for(; i != roster.end(); i++)
+    updateUserList(roster);
+}
+
+void MainDialog::beginTalk()
+{
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("New IM"),
+                                              tr("JID:"), QLineEdit::Normal, QString(), &ok);
+    if (ok && !text.isEmpty())
     {
+        JID jid(text.toStdString());
+        talks->messageRecieved(jid, QString());
+    }
+}
 
-        buddies->addTopLevelItem(new QTreeWidgetItem(QStringList(QString::fromStdString(i->first))));
+void MainDialog::setAvailableStatus()
+{
+    if (!m_client || !m_client->authed())
+        login->show();
+    else
+        m_client->setPresence(gloox::Presence::Available);
+}
 
+void MainDialog::setAwayStatus()
+{
+    if (!m_client || !m_client->authed())
+        login->show();
+    else
+        m_client->setPresence(gloox::Presence::Away);
+}
+
+void MainDialog::setDNDStatus()
+{
+    if (!m_client || !m_client->authed())
+        login->show();
+    else
+        m_client->setPresence(gloox::Presence::DND);
+}
+
+void MainDialog::setInvisibleStatus()
+{
+    if (!m_client || !m_client->authed())
+        login->show();
+    else
+        m_client->setPresence(gloox::Presence::Unavailable);
+}
+
+void MainDialog::setOfflineStatus()
+{
+    if (m_client)
+        m_client->disconnect();
+}
+
+void MainDialog::updateUserList(const Roster &roster)
+{
+    userList->clear();
+
+    std::map<const std::string, RosterItem*>::const_iterator i = roster.begin();
+    for(int row = 1; i != roster.end(); i++, row++)
+    {
+        RosterItem* rosterItem = i->second;
+
+        QListWidgetItem* item = new QListWidgetItem();
+        item->setToolTip(QString::fromUtf8(rosterItem->name().c_str()));
+
+        QVariant nick;
+        nick.setValue(QString::fromUtf8(rosterItem->name().c_str()));
+        qDebug() << "LALALA  " << rosterItem->name().c_str();
+        QVariant status;
+        QVariant presence;
+        const Resource * resource = rosterItem->highestResource();
+        if (resource)
+        {
+            status.setValue(QString::fromUtf8(resource->message().c_str()));
+
+            switch (resource->presence())
+            {
+                case Presence::Available: presence = tr("Available"); break;
+                case Presence::Away: case Presence::XA: presence = tr("Away"); break;
+                case Presence::DND: presence = tr("DND"); break;
+                default: presence = tr("Offline"); break;
+            }
+        }
+        presence.setValue(presence);
+        QVariant jid;
+        jid.setValue(QString::fromUtf8(rosterItem->jid().c_str()));
+        item->setData(UserItem::userNick, nick);
+        item->setData(UserItem::userStatus, status);
+        item->setData(UserItem::userJID, jid);
+        item->setData(UserItem::userPresence, presence);
+        userList->insertItem(row, item);
+    }
+}
+
+void MainDialog::disconnected(ConnectionError e)
+{
+    userList->clear();
+    if (e == ConnUserDisconnected) return;
+    QString message;
+    switch (e)
+    {
+        case ConnProxyAuthRequired: message = tr("Proxy auth required"); break;
+        case ConnProxyAuthFailed: message = tr("Proxy auth failed"); break;
+        case ConnConnectionRefused: message = tr("Connection was refused"); break;
+        case ConnAuthenticationFailed : message = tr("Authentication failed"); break;
+        case ConnUserDisconnected: message = tr("User disconnected"); break;
+        default: message = tr("Unrecognized or internal problems"); break;
+    }
+
+    trayIcon->showMessage(tr("Some troubles!"), message);
+}
+
+void MainDialog::itemAdded(const JID &jid)
+{
+    if (m_client && m_client->authed())
+    {
+        updateUserList(*m_client->roster()->roster());
+        m_client->roster()->synchronize();
+    }
+    trayIcon->showMessage(tr("User List"), tr("Item %1 added").arg(QString::fromUtf8(jid.full().c_str())));
+}
+
+void MainDialog::itemRemoved(const JID &jid)
+{
+    if (m_client && m_client->authed())
+    {
+        updateUserList(*m_client->roster()->roster());
+        m_client->roster()->synchronize();
+    }
+    trayIcon->showMessage(tr("User List"), tr("Item %1 removed").arg(QString::fromUtf8(jid.full().c_str())));
+}
+
+void MainDialog::itemUpdated(const JID &jid)
+{
+    if (m_client && m_client->authed())
+    {
+        updateUserList(*m_client->roster()->roster());
+        m_client->roster()->synchronize();
+    }
+    trayIcon->showMessage(tr("User List"), tr("Item %1 updated").arg(QString::fromUtf8(jid.full().c_str())));
+}
+
+void MainDialog::itemSubscribed (const JID &jid)
+{
+    trayIcon->showMessage(tr("User List"), tr("Item %1 subscribed").arg(QString::fromUtf8(jid.full().c_str())));
+}
+
+void MainDialog::itemUnsubscribed (const JID &jid)
+{
+    trayIcon->showMessage(tr("User List"), tr("Item %1 unsubscribed").arg(QString::fromUtf8(jid.full().c_str())));
+}
+
+void MainDialog::rosterPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg)
+{
+    if (m_client && m_client->authed())
+    {
+        updateUserList(*m_client->roster()->roster());
+    }
+
+    QString name;
+    name = QString::fromUtf8(item.name().c_str());
+    if (name.isNull() || name.isEmpty())
+        name = QString::fromUtf8(item.jid().c_str());
+
+    QString status;
+    switch (presence)
+    {
+        case Presence::Available: status = tr("available"); break;
+        case Presence::Away: case Presence::XA: status = tr("away"); break;
+        case Presence::DND: status = tr("DND"); break;
+        default: status = tr("offline"); break;
+    }
+
+
+    trayIcon->showMessage(tr("%1 now is %2").arg(name).arg(status), msg);
+}
+
+void MainDialog::subscriptionRequest (const JID &jid, const QString& msg)
+{
+    if (!m_client || !m_client->authed()) return;
+    if (QMessageBox::question(this, tr("%1 requesting subscriprtion").arg(QString::fromUtf8(jid.bare().c_str())),
+                              msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    {
+        m_client->roster()->ackSubscriptionRequest(jid, true);
+    }
+    else
+    {
+        m_client->roster()->ackSubscriptionRequest(jid, false);
+    }
+}
+
+void MainDialog::unsubscriptionRequest (const JID &jid, const QString& msg)
+{
+    if (!m_client || !m_client->authed()) return;
+    if (QMessageBox::question(this, tr("Unsubscribe %1").arg(QString::fromUtf8(jid.bare().c_str())),
+                              msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+    {
+        m_client->roster()->unsubscribe(jid);
+    }
+}
+
+void MainDialog::subscribeActionTriggered()
+{
+    if (!m_client || !m_client->authed()) return;
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Subscribe"),
+                                              tr("JID:"), QLineEdit::Normal,
+                                              QString(), &ok);
+    if (ok && !text.isEmpty())
+    {
+        JID jid(text.toStdString());
+        m_client->roster()->subscribe(jid, jid.username(), StringList(), "Please, authorize me!");
+    }
+}
+
+void MainDialog::unsubscribeActionTriggered()
+{
+    if (!m_client || !m_client->authed()) return;
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Unsubscribe"),
+                                              tr("JID:"), QLineEdit::Normal,
+                                              QString(), &ok);
+    if (ok && !text.isEmpty())
+    {
+        JID jid(text.toStdString());
+        m_client->roster()->unsubscribe(jid);
+    }
+}
+
+void MainDialog::userListClicked(QListWidgetItem * item)
+{
+    QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
+    JID jid(nick.toStdString());
+    talks->messageRecieved(jid, QString());
+}
+
+void MainDialog::addItemTriggered()
+{
+    if (!m_client || !m_client->authed()) return;
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Add item"),
+                                                  tr("JID:"), QLineEdit::Normal,
+                                                  QString(), &ok);
+    if (ok && !text.isEmpty())
+    {
+        JID jid(text.toStdString());
+        std::list<std::string> groups;
+        groups.push_front(QString("Buddies").toStdString());
+        m_client->roster()->add(jid, jid.username(), groups);
+    }
+}
+void MainDialog::removeItemTriggered()
+{
+    if (!m_client || !m_client->authed()) return;
+
+    foreach(QListWidgetItem *item, userList->selectedItems())
+    {
+        QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
+
+        if (QMessageBox::question(this, tr("Remove item %1").arg(nick),
+                                  tr("Remove this item from user list?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {
+            m_client->roster()->remove(JID(nick.toStdString()));
+        }
     }
 }

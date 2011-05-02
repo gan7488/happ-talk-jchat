@@ -27,6 +27,7 @@ void TalkWidget::createTexts()
 }
 void TalkWidget::messageReceived(const QString &msg)
 {
+    if (!msg.isNull() && !msg.isEmpty())
     story->append(QString("(%1)%2: %3").arg(QTime::currentTime().toString()).arg(QString::fromStdString(m_jid.username())).arg(msg));
 }
 
@@ -63,6 +64,7 @@ void TalkWidget::createButtons()
 
     send = new QPushButton(tr("Send"));
     send->setFixedSize(70, 70);
+    connect(send, SIGNAL(clicked()), this, SLOT(sendMessage()));
 }
 
 void TalkWidget::layoutElements()

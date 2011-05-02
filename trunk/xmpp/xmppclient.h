@@ -63,6 +63,11 @@ public:
      Roster manager
      */
     RosterManager* roster() const { return m_client->rosterManager(); }
+
+    /*
+     Presence
+     */
+    void setPresence (Presence::PresenceType pres) { m_client->setPresence(pres, 0); }
 signals:
     /*
      Occurs when connection established.

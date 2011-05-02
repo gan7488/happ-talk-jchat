@@ -28,7 +28,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
  */
 void LoginDialog::showEvent(QShowEvent *e)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, org, app);
     uname->setText(settings.value("account/username").toString());
     serv->setText(settings.value("account/server").toString());
 
@@ -97,7 +97,7 @@ void LoginDialog::accepted()
                                      tr("Fill all fields (username, server, password)"), QMessageBox::Ok);
             return;
         }
-        QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+        QSettings settings(QSettings::IniFormat, QSettings::UserScope, org, app);
         settings.setValue("account/username", uname->text());
         settings.setValue("account/server", serv->text());
 
@@ -117,7 +117,7 @@ void LoginDialog::accepted()
     if (reg) delete reg;
     reg = new XMPPRegistration(server());
 
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                        qApp->organizationName(), qApp->applicationName());
 
     QString proxy = settings.value("proxy/type", "none").toString().toLower();
