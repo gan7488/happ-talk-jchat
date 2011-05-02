@@ -13,7 +13,7 @@
  Constructors
  */
 TalksDialog::TalksDialog(QWidget *parent) :
-    QDialog(parent)
+    QDialog(parent), client(0)
 {
     this->setWindowFlags(Qt::Window);
     this->setWindowIcon(QIcon(":/images/write.svg"));
@@ -26,6 +26,7 @@ TalksDialog::TalksDialog(QWidget *parent) :
 void TalksDialog::setMessaging(XMPPMessaging *messaging)
 {
     client = messaging;
+    if (client == 0) return;
     connect(client, SIGNAL(chatMessageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
 }
 
@@ -101,13 +102,16 @@ void TalksDialog::messageRecieved(const JID &from, const QString &msg)
     show();
     foreach(TalkWidget *item, talkWidgets)
     {
-        if (item->target() == from)
+        if (item->target().bareJID() == from.bareJID())
         {
+            talks->setCurrentWidget(item);
             item->messageReceived(msg);
             return;
         }
     }
-    newTalk(from)->messageReceived(msg);;
+    TalkWidget *talk = newTalk(from);
+    talk->messageReceived(msg);
+    talks->setCurrentWidget(talk);
 }
 TalkWidget* TalksDialog::newTalk(const JID &target)
 {
@@ -115,7 +119,7 @@ TalkWidget* TalksDialog::newTalk(const JID &target)
     TalkWidget *widget = new TalkWidget();
     widget->setTarget(target);
     /* IT'S A BIG HOLE */
-    if (!client) return widget;
+    if (client == 0) return widget;
     connect(widget, SIGNAL(sendMessage(JID,QString)), client, SLOT(sendChatMessage(JID,QString)));
     talkWidgets.append(widget);
     talks->addTab(widget, QString::fromUtf8(target.username().c_str()));

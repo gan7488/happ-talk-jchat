@@ -25,7 +25,7 @@ void XMPPRoster::attachClient(Client *client)
 {
     if (!client) return;
     m_client = client;
-    m_client->rosterManager()->registerRosterListener(this);
+    m_client->rosterManager()->registerRosterListener(this, false);
 }
 
 void XMPPRoster::detachClient(Client *client)

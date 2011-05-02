@@ -15,7 +15,9 @@
 
 class QMenu;
 class QTreeWidget;
+class QListWidget;
 class QPushButton;
+class QListWidgetItem;
 
 class LoginDialog;
 class AboutDialog;
@@ -42,7 +44,8 @@ private:
     void createActions();
     void createButtons();
     void createTrayIcon();
-    void createTree();
+    //void createTree();
+    void createUserList();
     void createMenus();
     void createWindows();
     void layoutElements();
@@ -53,6 +56,7 @@ private:
     TalksDialog     *talks;
 
     QTreeWidget *buddies;
+    QListWidget *userList;
 
     QPushButton *top;
     QPushButton *right;
@@ -62,13 +66,19 @@ private:
     QMenu *menu;
     QMenu *statusMenu;
 
-    QAction *newTalk;
+    QAction *beginTalkAction;
+
+    QAction *subscribeAction;
+    QAction *unsubscribeAction;
 
     QAction *configAction;
     QAction *aboutAction;
     QAction *aboutQtAction;
     QAction *showhideAction;
     QAction *quitAction;
+
+    QAction *addItemAction;
+    QAction *removeItemAction;
 
     QList<QAction *> statusActions;
 
@@ -79,6 +89,28 @@ private:
     XMPPRoster      *m_roster;
 
 private slots:
+    void addItemTriggered();
+    void removeItemTriggered();
+
+    void subscribeActionTriggered();
+    void unsubscribeActionTriggered();
+
+    void updateUserList(const Roster &roster);
+    void disconnected(ConnectionError e);
+
+    void itemAdded (const JID &jid);
+    void itemRemoved (const JID &jid);
+    void itemUpdated (const JID &jid);
+
+    void itemSubscribed (const JID &jid);
+    void itemUnsubscribed (const JID &jid);
+
+    void rosterPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg);
+
+    void subscriptionRequest (const JID &jid, const QString& msg);
+    void unsubscriptionRequest (const JID &jid, const QString& msg);
+
+
     void rosterRecieved (const Roster &roster);
 
     void loginAccepted();
@@ -89,11 +121,21 @@ private slots:
     void bottomClicked();
     void leftClicked();
 
+    void beginTalk();
+
     void configActionTriggered();
     void aboutActionTriggered();
     void aboutQtActionTriggered();
     void quitActionTriggered();
-    void status();
+
+    void setAvailableStatus();
+    void setAwayStatus();
+    void setDNDStatus();
+    void setInvisibleStatus();
+    void setOfflineStatus();
+
+    void userListClicked(QListWidgetItem * item);
+
 };
 
 #endif // MAINDIALOG_H

@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     xmpp/xmppregistration.cpp \
     xmpp/xmppmessaging.cpp \
     xmpp/xmppmucmessaging.cpp \
-    xmpp/xmpproster.cpp
+    xmpp/xmpproster.cpp \
+    ui/useritem.cpp
 
 HEADERS  += \
     consts.h \
@@ -44,7 +45,8 @@ HEADERS  += \
     xmpp/xmppclientextension.h \
     xmpp/xmppmessaging.h \
     xmpp/xmppmucmessaging.h \
-    xmpp/xmpproster.h
+    xmpp/xmpproster.h \
+    ui/useritem.h
 
 OTHER_FILES += \
     readme.txt
