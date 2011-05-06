@@ -10,8 +10,8 @@
 class QComboBox;
 class QLabel;
 
-/*
- Configuration dialog. General configuration section.
+/**
+ * @brief General configuration section in configuration dialog.
  */
 class GeneralConfigWidget : public QWidget
 {
@@ -20,22 +20,25 @@ public:
     explicit GeneralConfigWidget(QWidget *parent = 0);
 
 public slots:
-    /*
-     Slots
+    /**
+     * @brief Load configuration from file.
      */
     void load();
+    /**
+     * @brief Save configuration from file.
+     */
     void save();
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
 
-    /*
-     Elements
-     */
     QComboBox *lang;
     QComboBox *style;
 };

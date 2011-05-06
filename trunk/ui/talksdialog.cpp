@@ -18,16 +18,18 @@ TalksDialog::TalksDialog(QWidget *parent) :
     this->setWindowFlags(Qt::Window);
     this->setWindowIcon(QIcon(":/images/write.svg"));
     this->setMinimumSize(600, 400);
-    createTabs();
+    createElements();
     layoutElements();
-    //this->client = client;
-    //connect(client, SIGNAL(messageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
 }
 void TalksDialog::setMessaging(XMPPMessaging *messaging)
 {
     client = messaging;
     if (client == 0) return;
     connect(client, SIGNAL(chatMessageRecieved(JID,QString)), this, SLOT(messageRecieved(JID,QString)));
+    foreach(TalkWidget *item, talkWidgets)
+    {
+        connect(item, SIGNAL(sendMessage(JID,QString)), client, SLOT(sendChatMessage(JID,QString)));
+    }
 }
 
 /*
@@ -48,13 +50,14 @@ void TalksDialog::closeEvent(QCloseEvent *e)
     QDialog::closeEvent(e);
 }
 
-void TalksDialog::createTabs()
+void TalksDialog::createElements()
 {
-    rooms = new QTabWidget();
+    /*rooms = new QTabWidget();
     rooms->setTabPosition(QTabWidget::South);
     rooms->setTabsClosable(true);
     rooms->setMovable(true);
     connect(rooms, SIGNAL(tabCloseRequested(int)), this, SLOT(closeRoom(int)));
+    */
     //TODO On close | handle event
 
     talks = new QTabWidget();
@@ -64,18 +67,19 @@ void TalksDialog::createTabs()
     connect(talks, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTalk(int)));
     //TODO On close | handle event
 
-    advanced = new QTabWidget();
+    /*advanced = new QTabWidget();
     advanced->setTabPosition(QTabWidget::South);
     advanced->setTabsClosable(true);
     advanced->setMovable(true);
+    */
     //TODO On close | handle event
 
     tabs = new QTabWidget();
     tabs->setIconSize(QSize(30,30));
     tabs->setTabPosition(QTabWidget::West);
     tabs->addTab(talks, QIcon(":/images/user.svg"), tr("Talks"));
-    tabs->addTab(rooms, QIcon(":/images/users.svg"), tr("Rooms"));
-    tabs->addTab(advanced, QIcon(":/images/office.svg"), tr("Advanced"));
+    //tabs->addTab(rooms, QIcon(":/images/users.svg"), tr("Rooms"));
+    //tabs->addTab(advanced, QIcon(":/images/office.svg"), tr("Advanced"));
 
     RoomInfoWidget *info = new RoomInfoWidget();
     info->setVisible(false);
@@ -99,6 +103,8 @@ void TalksDialog::layoutElements()
 
 void TalksDialog::messageRecieved(const JID &from, const QString &msg)
 {
+    // Find window and send message to that window
+    // If widget wasn't found, create new widget.
     show();
     foreach(TalkWidget *item, talkWidgets)
     {
@@ -115,10 +121,11 @@ void TalksDialog::messageRecieved(const JID &from, const QString &msg)
 }
 TalkWidget* TalksDialog::newTalk(const JID &target)
 {
+    // Create new Widget and return it
     raise();
     TalkWidget *widget = new TalkWidget();
     widget->setTarget(target);
-    /* IT'S A BIG HOLE */
+
     if (client == 0) return widget;
     connect(widget, SIGNAL(sendMessage(JID,QString)), client, SLOT(sendChatMessage(JID,QString)));
     talkWidgets.append(widget);
@@ -132,6 +139,7 @@ void TalksDialog::closeRoom(int index)
 }
 void TalksDialog::closeTalk(int index)
 {
+    // Finish conversation
     TalkWidget *widget = (TalkWidget *)talks->currentWidget();
     client->endChat(widget->target());
     talkWidgets.removeOne(widget);

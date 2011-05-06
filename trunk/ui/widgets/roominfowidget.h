@@ -7,16 +7,14 @@
 
 #include <QWidget>
 
+/**
+ * @brief Not implemented at this stage.
+ */
 class RoomInfoWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit RoomInfoWidget(QWidget *parent = 0);
-
-signals:
-
-public slots:
-
 };
 
 #endif // ROOMINFOWIDGET_H

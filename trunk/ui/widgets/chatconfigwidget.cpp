@@ -22,12 +22,7 @@ ChatConfigWidget::ChatConfigWidget(QWidget *parent) :
 /*
  Setup UI
  */
-void ChatConfigWidget::createElements()
-{
-    /*
-     TODO
-     */
-}
+void ChatConfigWidget::createElements() { }
 void ChatConfigWidget::layoutElements()
 {
     QHBoxLayout *hLayout = new QHBoxLayout();
@@ -46,13 +41,6 @@ void ChatConfigWidget::layoutElements()
 /*
  Slots
  */
+void ChatConfigWidget::load() { }
 
-void ChatConfigWidget::load()
-{
-
-}
-
-void ChatConfigWidget::save()
-{
-
-}
+void ChatConfigWidget::save() { }

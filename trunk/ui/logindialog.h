@@ -11,11 +11,10 @@
 
 class QCheckBox;
 class QDialogButtonBox;
-//class QLineEdit;
 class QSvgWidget;
 
-/*
- Login dialog
+/**
+ * @brief Login dialog.
  */
 class LoginDialog : public QDialog
 {
@@ -23,35 +22,57 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(QWidget *parent = 0);
 
-    /*
-     Getters
+    /**
+     * @brief Get username.
      */
     const QString username() const { return uname->text(); }
+    /**
+     * @brief Get server.
+     */
     const QString server() const { return serv->text(); }
+    /**
+     * @brief Get password.
+     */
     const QString password() const { return pass->text(); }
 
 protected:
-    /*
-     Events
+    /**
+     * @brief Show event.
      */
     void showEvent(QShowEvent *e);
 
 private slots:
-    /*
-     Slots
+    /**
+     * @brief Accept button pressed.
      */
     void accepted();
+    /**
+     * @brief Reject button pressed.
+     */
     void rejected();
 
+    /**
+     * @brief Connection is established.
+     */
     void connected();
+    /**
+     * @brief The connection was aborted.
+     * @param e The reason for the disconnection.
+     */
     void disconnected(ConnectionError e);
-    void registrationCompleted(RegistrationResult);
+    /**
+     * @brief Registration completed.
+     */
+    void registrationCompleted(RegistrationResult result);
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
 
     /*

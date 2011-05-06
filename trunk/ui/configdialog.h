@@ -14,8 +14,8 @@ class GeneralConfigWidget;
 class ChatConfigWidget;
 class ProxyConfigWidget;
 
-/*
- Configuration dialog
+/**
+ * @brief Configuration dialog.
  */
 class ConfigDialog : public QDialog
 {
@@ -24,27 +24,34 @@ public:
     explicit ConfigDialog(QWidget *parent = 0);
 
 protected:
-    /*
-     Show event
+    /**
+     * @brief Show event
      */
     virtual void showEvent(QShowEvent *);
 
 private slots:
-    /*
-     Slots
+    /**
+     * @brief Accept button pressed.
      */
     void accepted();
+    /**
+     * @brief Apply button pressed.
+     */
     void applied();
+    /**
+     * @brief Reject button pressed.
+     */
     void rejected();
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
-    void createButtons();
-    void createTabs();
 
     /*
      Elements

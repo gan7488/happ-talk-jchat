@@ -37,12 +37,6 @@ void ConfigDialog::showEvent(QShowEvent *)
  */
 void ConfigDialog::createElements()
 {
-    createButtons();
-    createTabs();
-}
-
-void ConfigDialog::createButtons()
-{
     QPushButton *apply;
 
     buttons = new QDialogButtonBox();
@@ -53,11 +47,8 @@ void ConfigDialog::createButtons()
     connect(buttons, SIGNAL(accepted()), this, SLOT(accepted()));
     connect(buttons, SIGNAL(rejected()), this, SLOT(rejected()));
     connect(apply, SIGNAL(clicked()), this, SLOT(applied()));
-}
 
 
-void ConfigDialog::createTabs()
-{
     tabs = new QTabWidget();
     tabs->setIconSize(QSize(40,40));
 
@@ -82,7 +73,6 @@ void ConfigDialog::createTabs()
     //tab = tabs->addTab(new QLabel("TRANSFER SETTINGS GOES HERE"), QIcon(":/images/transfer.svg"), tr("Transfer"));
     //tabs->setTabToolTip(tab, tr("General configuration"));
     //tabs->setTabWhatsThis(tab, tr("It's general configuration!"));
-
 }
 
 void ConfigDialog::layoutElements()

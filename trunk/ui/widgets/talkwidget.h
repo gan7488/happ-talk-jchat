@@ -15,35 +15,33 @@ class QWidget;
 
 using namespace gloox;
 
-/*
- History goes here.
- Message typing goes here.
- User info goes here.
+/**
+ * @brief Widget that implements the conversation.
  */
 class TalkWidget : public QWidget
 {
     Q_OBJECT
 public:
-    /*
-     Constructor
-     */
     explicit TalkWidget(QWidget *parent = 0, QWidget *info = 0);
 
-    /*
-     Target
+    /**
+     * @brief Set companion.
      */
     void setTarget(const JID &target) { m_jid = target; }
+    /**
+     * @brief Get companion.
+     */
     JID target() { return m_jid; }
 
 signals:
-    /*
-     Send message
+    /**
+     * @brief Send message.
      */
     void sendMessage(const JID& target, const QString &msg);
 
 public slots:
-    /*
-     Message recieved
+    /**
+     * @brief Message recieved from @ref target();
      */
     void messageReceived(const QString &msg);
 
@@ -51,13 +49,15 @@ private slots:
     void sendMessage();
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
-    void createButtons();
-    void createTexts();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
+
 
     /*
      Elements
@@ -75,8 +75,6 @@ private:
     QPushButton *strikeout;
 
     QPushButton *fontSize;
-
-    QPushButton *clear;
 
     QWidget     *info;
 };

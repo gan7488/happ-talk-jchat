@@ -10,8 +10,8 @@
 class QDialogButtonBox;
 class QTextEdit;
 
-/*
- About dialog.
+/**
+ * @brief About dialog.
  */
 class AboutDialog : public QDialog
 {
@@ -26,10 +26,13 @@ private slots:
     void helpRequested();
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
 
     /*

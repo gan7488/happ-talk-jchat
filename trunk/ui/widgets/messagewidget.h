@@ -7,11 +7,8 @@
 
 #include <QTextEdit>
 
-/*
- Widget for typing message.
- TODO:
-    1) IntelliType (or something like that) :D
-    2) Draw smiles or not?
+/**
+ * @brief Text Edit Widget for typing message.
  */
 class MessageWidget : public QTextEdit
 {
@@ -20,8 +17,8 @@ public:
     explicit MessageWidget(QWidget *parent = 0);
 
 signals:
-    /*
-     Signals
+    /**
+     * @brief Ctrl + Enter was pressed.
      */
     void accepted();
 

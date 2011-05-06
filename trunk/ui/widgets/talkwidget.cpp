@@ -11,20 +11,10 @@ TalkWidget::TalkWidget(QWidget *parent, QWidget *info) :
 {
     this->info = info;
 
-    createTexts();
-    createButtons();
+    createElements();
     layoutElements();
 }
 
-void TalkWidget::createTexts()
-{
-    story = new QTextEdit();
-    story->setReadOnly(true);
-
-    message = new MessageWidget();
-    message->setFixedHeight(70);
-    connect(message, SIGNAL(accepted()), this, SLOT(sendMessage()));
-}
 void TalkWidget::messageReceived(const QString &msg)
 {
     if (!msg.isNull() && !msg.isEmpty())
@@ -38,29 +28,38 @@ void TalkWidget::sendMessage()
     message->clear();
 }
 
-void TalkWidget::createButtons()
+void TalkWidget::createElements()
 {
+    story = new QTextEdit();
+    story->setReadOnly(true);
+
+    message = new MessageWidget();
+    message->setFixedHeight(70);
+    connect(message, SIGNAL(accepted()), this, SLOT(sendMessage()));
+
     bold = new QPushButton(tr("B"));
+    bold->setEnabled(false);
     bold->setCheckable(true);
     bold->setFixedSize(25, 25);
 
     italic = new QPushButton(tr("I"));
+    italic->setEnabled(false);
     italic->setCheckable(true);
     italic->setFixedSize(25, 25);
 
     underline = new QPushButton(tr("U"));
+    underline->setEnabled(false);
     underline->setCheckable(true);
     underline->setFixedSize(25, 25);
 
     strikeout = new QPushButton(tr("-"));
+    strikeout->setEnabled(false);
     strikeout->setCheckable(true);
     strikeout->setFixedSize(25,25);
 
     fontSize = new QPushButton("Size");
+    fontSize->setEnabled(false);
     fontSize->setFixedSize(60, 25);
-
-    clear = new QPushButton(tr("Clear"));
-    clear->setFixedSize(40, 25);
 
     send = new QPushButton(tr("Send"));
     send->setFixedSize(70, 70);
@@ -76,8 +75,6 @@ void TalkWidget::layoutElements()
     hLayout1->addWidget(strikeout);
     hLayout1->addSpacing(5);
     hLayout1->addWidget(fontSize);
-    hLayout1->addSpacing(5);
-    hLayout1->addWidget(clear);
     hLayout1->addStretch();
 
     QHBoxLayout *hLayout2 = new QHBoxLayout();

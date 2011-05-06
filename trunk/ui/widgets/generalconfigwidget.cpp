@@ -26,12 +26,12 @@ void GeneralConfigWidget::createElements()
 {
     lang    = new QComboBox();
     lang->addItem(tr("Default - English"));
-    lang->addItem(tr("Russian"));
+    //lang->addItem(tr("Russian"));
     lang->setFixedWidth(150);
 
     style   = new QComboBox();
     style->addItem(tr("Default"));
-    style->addItem(tr("..."));
+    //style->addItem(tr("..."));
     style->setFixedWidth(150);
 }
 void GeneralConfigWidget::layoutElements()
@@ -55,12 +55,6 @@ void GeneralConfigWidget::layoutElements()
 /*
  Slots
  */
-void GeneralConfigWidget::load()
-{
+void GeneralConfigWidget::load() { }
 
-}
-
-void GeneralConfigWidget::save()
-{
-
-}
+void GeneralConfigWidget::save() { }
