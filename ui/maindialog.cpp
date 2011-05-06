@@ -9,6 +9,7 @@
 #include "logindialog.h"
 #include "consts.h"
 #include "useritem.h"
+#include <gloox/rostermanager.h>
 #include <gloox/rosteritem.h>
 
 #include <QtGui>
@@ -24,7 +25,6 @@ MainDialog::MainDialog(QWidget *parent) :
     this->setWindowTitle(tr("Jchat : Talkers"));
     this->setWindowIcon(QIcon(":/images/logo.svg"));
 
-    //createTree();
     createUserList();
     createButtons();
     layoutElements();
@@ -39,7 +39,6 @@ MainDialog::~MainDialog()
 {
     if (m_client)
     {
-        //m_client->disconnect();
         delete m_client;
     }
     delete about;
@@ -55,42 +54,23 @@ void MainDialog::showhide()
 
 void MainDialog::showEvent(QShowEvent *e)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, org, app);
     restoreGeometry(settings.value("maindialog/geometry").toByteArray());
 
     QDialog::showEvent(e);
 
     if (!m_client || !m_client->authed())
         login->show();
-
-//    qDebug() << "pointer " << (int) client;
-//    if (client != 0) return;
-//    int ret = login->exec();
-//    if (ret == QDialog::Accepted)
-//    {
-//        JID jid(login->getAccount().toStdString());
-//        client = new JClient(jid, login->getPassword());
-//        client->connect();
-
-//        //client->connect(jid, login->getPassword());
-//    }
-
 }
 
 void MainDialog::closeEvent(QCloseEvent *e)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope, org, app);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, org, app);
     settings.setValue("maindialog/geometry", saveGeometry());
 
     hide();
     e->ignore();
 }
-
-/*void MainDialog::createTree()
-{
-    buddies = new QTreeWidget();
-}
-*/
 
 void MainDialog::createUserList()
 {
@@ -103,21 +83,21 @@ void MainDialog::createUserList()
 
 void MainDialog::createButtons()
 {
-    top = new QPushButton(tr("-"));
+    top = new QPushButton(tr("Talks"));
     top->setFixedSize(80, 25);
     connect(top, SIGNAL(clicked()), this, SLOT(topClicked()));
 
-    right = new QPushButton(tr(">"));
+    right = new QPushButton(QIcon(":/images/status-avaliable.svg"), "");
+    right->setIconSize(QSize(50,50));
     right->setFixedSize(60, 55);
-    connect(right, SIGNAL(clicked()), this, SLOT(rightClicked()));
 
-    bottom = new QPushButton(tr("-"));
+    bottom = new QPushButton(tr("Config"));
     bottom->setFixedSize(80, 25);
     connect(bottom, SIGNAL(clicked()), this, SLOT(bottomClicked()));
 
     left = new QPushButton(QIcon(":/images/folder.svg"), "");
+    left->setIconSize(QSize(50,50));
     left->setFixedSize(60, 55);
-    connect(left, SIGNAL(clicked()), this, SLOT(leftClicked()));
 }
 
 void MainDialog::createActions()
@@ -126,22 +106,27 @@ void MainDialog::createActions()
 
     stat = new QAction(QIcon(":/images/status-avaliable.svg") , tr("Avaliable"), this);
     connect(stat, SIGNAL(triggered()), this, SLOT(setAvailableStatus()));
+    stat->setCheckable(true);
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-away.svg") , tr("Away"), this);
     connect(stat, SIGNAL(triggered()), this, SLOT(setAwayStatus()));
+    stat->setCheckable(true);
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-dnd.svg") , tr("Do Not Disturbed"), this);
     connect(stat, SIGNAL(triggered()), this, SLOT(setDNDStatus()));
+    stat->setCheckable(true);
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-invisible.svg") , tr("Invisible"), this);
     connect(stat, SIGNAL(triggered()), this, SLOT(setInvisibleStatus()));
+    stat->setCheckable(true);
     statusActions.append(stat);
 
     stat = new QAction(QIcon(":/images/status-offline.svg") , tr("Offline"), this);
     connect(stat, SIGNAL(triggered()), this, SLOT(setOfflineStatus()));
+    stat->setCheckable(true);
     statusActions.append(stat);
 
     beginTalkAction = new QAction(QIcon(":/images/info.svg"), tr("New talk"), this);
@@ -175,10 +160,6 @@ void MainDialog::createActions()
 
     removeItemAction = new QAction(tr("Remove item"), this);
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(removeItemTriggered()));
-/*
-    imAction = new QAction(QIcon(":/images/info.svg"), tr("Begin talk"), this);
-    connect(imAction, SIGNAL(triggered()), this, SLOT(imActionTriggere()));
-*/
 }
 
 void MainDialog::createMenus()
@@ -213,16 +194,6 @@ void MainDialog::createMenus()
 
     left->setMenu(menu);
     right->setMenu(statusMenu);
-
-    /*userListMenu = new QMenu();
-    userListMenu->addAction(imAction);
-    userListMenu->addSeparator();
-    userListMenu->addAction(subscribeAction);
-    userListMenu->addAction(addItemAction);
-    userListMenu->addSeparator();
-    userListMenu->addAction(unsubscribeAction);
-    userListMenu->addAction(removeItemAction);
-*/
 }
 
 void MainDialog::createWindows()
@@ -237,13 +208,6 @@ void MainDialog::createWindows()
 
 void MainDialog::createTrayIcon()
 {
-    /*trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(minimizeAction);
-    trayIconMenu->addAction(maximizeAction);
-    trayIconMenu->addAction(restoreAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);*/
-
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(menu);//trayIconMenu);
     trayIcon->setIcon(QIcon(":/images/logo.svg"));
@@ -267,7 +231,6 @@ void MainDialog::layoutElements()
     hLayout->addWidget(right);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    //layout->addWidget(buddies);
     layout->addWidget(userList);
     layout->addSpacing(10);
     layout->addLayout(hLayout);
@@ -288,7 +251,7 @@ void MainDialog::loginAccepted()
     }
     m_client = new XMPPClient(jid, login->password());
 
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                        qApp->organizationName(), qApp->applicationName());
 
     QString proxy = settings.value("proxy/type", "none").toString().toLower();
@@ -313,6 +276,8 @@ void MainDialog::loginAccepted()
     connect(m_roster, SIGNAL(itemSubscribed(JID)), this, SLOT(itemSubscribed(JID)));
     connect(m_roster, SIGNAL(itemUnsubscribed(JID)), this, SLOT(itemUnsubscribed(JID)));
 
+    connect(m_roster,SIGNAL(selfPresence(RosterItem,QString,Presence::PresenceType,QString)),
+            this, SLOT(selfPresence(RosterItem,QString,Presence::PresenceType,QString)));
     connect(m_roster, SIGNAL(rosterPresence(RosterItem,QString,Presence::PresenceType,QString)),
             this, SLOT(rosterPresence(RosterItem,QString,Presence::PresenceType,QString)));
 
@@ -330,19 +295,9 @@ void MainDialog::topClicked()
     talks->show();
 }
 
-void MainDialog::rightClicked()
-{
-    about->show();
-}
-
 void MainDialog::bottomClicked()
 {
     config->show();
-}
-
-void MainDialog::leftClicked()
-{
-
 }
 
 void MainDialog::configActionTriggered()
@@ -361,7 +316,6 @@ void MainDialog::aboutQtActionTriggered()
 
 void MainDialog::quitActionTriggered()
 {
-    //TODO close doors
     qApp->quit();
 }
 
@@ -372,11 +326,6 @@ void MainDialog::iconActivated(QSystemTrayIcon::ActivationReason reason)
      case QSystemTrayIcon::DoubleClick:
          showhide();
          break;
-     case QSystemTrayIcon::MiddleClick:
-         //TODO
-         break;
-     default:
-         ;
      }
  }
 
@@ -402,7 +351,11 @@ void MainDialog::setAvailableStatus()
     if (!m_client || !m_client->authed())
         login->show();
     else
+    {
+        foreach(QAction *action, statusActions)
+            action->setChecked(false);
         m_client->setPresence(gloox::Presence::Available);
+    }
 }
 
 void MainDialog::setAwayStatus()
@@ -410,7 +363,11 @@ void MainDialog::setAwayStatus()
     if (!m_client || !m_client->authed())
         login->show();
     else
+    {
+        foreach(QAction *action, statusActions)
+            action->setChecked(false);
         m_client->setPresence(gloox::Presence::Away);
+    }
 }
 
 void MainDialog::setDNDStatus()
@@ -418,7 +375,11 @@ void MainDialog::setDNDStatus()
     if (!m_client || !m_client->authed())
         login->show();
     else
+    {
+        foreach(QAction *action, statusActions)
+            action->setChecked(false);
         m_client->setPresence(gloox::Presence::DND);
+    }
 }
 
 void MainDialog::setInvisibleStatus()
@@ -426,7 +387,11 @@ void MainDialog::setInvisibleStatus()
     if (!m_client || !m_client->authed())
         login->show();
     else
+    {
+        foreach(QAction *action, statusActions)
+            action->setChecked(false);
         m_client->setPresence(gloox::Presence::Unavailable);
+    }
 }
 
 void MainDialog::setOfflineStatus()
@@ -462,9 +427,11 @@ void MainDialog::updateUserList(const Roster &roster)
                 case Presence::Available: presence = tr("Available"); break;
                 case Presence::Away: case Presence::XA: presence = tr("Away"); break;
                 case Presence::DND: presence = tr("DND"); break;
-                default: presence = tr("Offline"); break;
+                default: presence = tr("Unavailable"); break;
             }
         }
+        else
+            presence = tr("Offline");
         presence.setValue(presence);
         QVariant jid;
         jid.setValue(QString::fromUtf8(rosterItem->jid().c_str()));
@@ -532,6 +499,18 @@ void MainDialog::itemSubscribed (const JID &jid)
 void MainDialog::itemUnsubscribed (const JID &jid)
 {
     trayIcon->showMessage(tr("User List"), tr("Item %1 unsubscribed").arg(QString::fromUtf8(jid.full().c_str())));
+}
+void MainDialog::selfPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg)
+{
+    foreach(QAction *action, statusActions)
+        action->setChecked(false);
+    switch (presence)
+    {
+        case Presence::Unavailable: statusActions.at(3)->setChecked(true); break;
+        case Presence::Available: statusActions.at(0)->setChecked(true); break;
+        case Presence::Away: case Presence::XA: statusActions.at(1)->setChecked(true); break;
+        case Presence::DND: statusActions.at(2)->setChecked(true); break;
+    }
 }
 
 void MainDialog::rosterPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg)
@@ -636,6 +615,7 @@ void MainDialog::addItemTriggered()
         m_client->roster()->add(jid, jid.username(), groups);
     }
 }
+
 void MainDialog::removeItemTriggered()
 {
     if (!m_client || !m_client->authed()) return;
@@ -648,6 +628,8 @@ void MainDialog::removeItemTriggered()
                                   tr("Remove this item from user list?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
             m_client->roster()->remove(JID(nick.toStdString()));
+            //JID jid(nick.toStdString());
+            //m_client->roster()->unsubscribe(jid);
         }
     }
 }

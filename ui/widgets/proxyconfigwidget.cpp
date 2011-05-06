@@ -76,7 +76,7 @@ void ProxyConfigWidget::layoutElements()
  */
 void ProxyConfigWidget::load()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                        qApp->organizationName(), qApp->applicationName());
 
     QString proxy = settings.value("proxy/type", "none").toString().toLower();
@@ -97,7 +97,7 @@ void ProxyConfigWidget::load()
 
 void ProxyConfigWidget::save()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::SystemScope,
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                        qApp->organizationName(), qApp->applicationName());
 
     switch (proxyType->currentIndex())

@@ -10,8 +10,8 @@
 class QComboBox;
 class QLineEdit;
 
-/*
- Configaration dialog. Proxy configuration section.
+/**
+ * @brief Proxy configuration section in configaration dialog.
  */
 class ProxyConfigWidget : public QWidget
 {
@@ -20,25 +20,28 @@ public:
     explicit ProxyConfigWidget(QWidget *parent = 0);
 
 public slots:
-    /*
-     Slots
+    /**
+     * @brief Load configuration from file.
      */
     void load();
+    /**
+     * @brief Save configuration from file.
+     */
     void save();
 
 private slots:
     void proxyTypeChanged ( int index );
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
 
-    /*
-     Elements
-     */
     QComboBox *proxyType;
 
     QLineEdit *proxyHost;

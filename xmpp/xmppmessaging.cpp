@@ -20,6 +20,7 @@ XMPPMessaging::~XMPPMessaging()
 
 /*
  Attach and detach client
+ Register or remove handlers
  */
 void XMPPMessaging::attachClient(Client *client)
 {
@@ -53,6 +54,7 @@ void XMPPMessaging::beginChat(const JID &target)
         }
     }
     /* jid not founded */
+    // Add new message Session
     m_chats.append(createChat(new MessageSession(m_client, target)));
     qDebug() << "[beginChat] chat with jid " << target.full().c_str()
             << " was not founded. created." << m_chats.count() << " in chat list";
@@ -63,11 +65,13 @@ void XMPPMessaging::beginChat(const JID &target)
  */
 XMPPMessaging::Chat XMPPMessaging::createChat(MessageSession *session)
 {
+    // Fill chat structure
     Chat chat;
     chat.session            = session;
     chat.messageEventFilter = new MessageEventFilter(chat.session);
     chat.chatStateFilter    = new ChatStateFilter(chat.session);
 
+    // Register all handlers
     chat.session->registerMessageHandler(this);
     chat.session->registerMessageFilter(chat.messageEventFilter);
     chat.messageEventFilter->registerMessageEventHandler(this);
@@ -106,6 +110,7 @@ void XMPPMessaging::endChat(const JID &target)
 void XMPPMessaging::sendChatMessage(const JID &target, const QString &msg)
 {
     beginChat(target);
+    // Find target and send message
     foreach(Chat chat, m_chats)
     {
         if (chat.session && chat.session->target().bareJID() == target.bareJID())
@@ -155,6 +160,7 @@ void XMPPMessaging::handleMessage(const Message &msg, MessageSession *session)
 }
 void XMPPMessaging::handleMessageSession(MessageSession *session)
 {
+    // New session or not?
     foreach(Chat chat, m_chats)
     {
         if (chat.session->target() == session->target())
@@ -167,6 +173,7 @@ void XMPPMessaging::handleMessageSession(MessageSession *session)
     }
 
     /* jid not founded */
+    // Add session
     m_chats.append(createChat(session));
     qDebug() << "[handleMessageSession] chat with jid " << session->target().full().c_str()
             << " was not founded. created." << m_chats.count() << " in chat list";

@@ -7,6 +7,9 @@
 
 #include <QStyledItemDelegate>
 
+/**
+ * @brief User item in user list
+ */
 class UserItem : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -27,11 +30,6 @@ public:
 
     QSize sizeHint(const QStyleOptionViewItem &option,
                        const QModelIndex &index) const;
-
-signals:
-
-public slots:
-
 };
 
 #endif // USERITEM_H

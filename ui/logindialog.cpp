@@ -88,8 +88,10 @@ void LoginDialog::layoutElements()
  */
 void LoginDialog::accepted()
 {
+    // Just connect, not register
     if (join->checkState() != Qt::Checked)
     {
+        // Checking all fields
         if (uname->text().isEmpty() || serv->text().isEmpty() || pass->text().isEmpty())
         {
             QMessageBox::information(this,
@@ -97,15 +99,18 @@ void LoginDialog::accepted()
                                      tr("Fill all fields (username, server, password)"), QMessageBox::Ok);
             return;
         }
+        // Save information
         QSettings settings(QSettings::IniFormat, QSettings::UserScope, org, app);
         settings.setValue("account/username", uname->text());
         settings.setValue("account/server", serv->text());
 
+        // Accept
         this->accept();
         return;
     }
     qDebug() << "join";
 
+    // Checking server field
     if (serv->text().isEmpty())
     {
         QMessageBox::information(this,
@@ -114,9 +119,11 @@ void LoginDialog::accepted()
         return;
     }
 
+    // Registration
     if (reg) delete reg;
     reg = new XMPPRegistration(server());
 
+    // Load proxy settings
     QSettings settings(QSettings::IniFormat, QSettings::UserScope,
                        qApp->organizationName(), qApp->applicationName());
 
@@ -132,15 +139,19 @@ void LoginDialog::accepted()
                             settings.value("proxy/user").toString(),
                             settings.value("proxy/pass").toString());
 
+    // Fill username an password
     reg->setUsername(username());
     reg->setPassword(password());
 
+    // Connecting signals - slots
     connect(reg, SIGNAL(connected()), this, SLOT(connected()));
     connect(reg, SIGNAL(disconnected(ConnectionError)),
             this, SLOT(disconnected(ConnectionError)));
     connect(reg,SIGNAL(registrationCompleted(RegistrationResult)),
             this, SLOT(registrationCompleted(RegistrationResult)));
 
+    // Connecting && registration goes here
+    // Registration occurs when a connection is established
     reg->connect();
 }
 
@@ -151,6 +162,8 @@ void LoginDialog::rejected()
 
 void LoginDialog::connected()
 {
+    // Registration occurs when a connection is established
+    // It means here
     reg->createAccount();
 }
 

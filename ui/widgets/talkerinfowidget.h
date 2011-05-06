@@ -7,16 +7,14 @@
 
 #include <QWidget>
 
+/**
+ * @brief Not implemented at this stage.
+ */
 class TalkerInfoWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit TalkerInfoWidget(QWidget *parent = 0);
-
-signals:
-
-public slots:
-
 };
 
 #endif // TALKERINFOWIDGET_H

@@ -17,8 +17,8 @@ class QString;
 
 using namespace gloox;
 
-/*
- Chats, Rooms, Rooms Settings
+/**
+ * @brief Chats, Rooms, Rooms Settings
  */
 class TalksDialog : public QDialog
 {
@@ -28,10 +28,10 @@ public:
 
     void setMessaging(XMPPMessaging *messaging);
 
-    /*
-     Slots
-     */
 public slots:
+    /**
+     * @brief Occures when message was recieved.
+     */
     void messageRecieved(const JID &from, const QString &msg);
 
 private slots:
@@ -41,17 +41,23 @@ private slots:
     void closeTalk(int index);
 
 protected:
-    /*
-     Events
+    /**
+     * @brief Occurs when the dialog is shown.
      */
     void showEvent(QShowEvent *e);
+    /**
+     * @brief Occurs when the dialog is closed.
+     */
     void closeEvent(QCloseEvent *e);
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
-    void createTabs();
+    void createElements();
+    /**
+     * @brief Layout widgets.
+     */
     void layoutElements();
 
     /*

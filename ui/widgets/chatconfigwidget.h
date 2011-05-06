@@ -7,8 +7,8 @@
 
 #include <QWidget>
 
-/*
- Configuration. Chat configuration section.
+/**
+ * @brief Chat configuration section in configuration dialog.
  */
 class ChatConfigWidget : public QWidget
 {
@@ -17,22 +17,24 @@ public:
     explicit ChatConfigWidget(QWidget *parent = 0);
 
 public slots:
-    /*
-     Slots
+    /**
+     * @brief Load configuration from file.
      */
     void load();
+    /**
+     * @brief Save configuration from file.
+     */
     void save();
 
 private:
-    /*
-     Setup UI
+    /**
+     * @brief Creating widgets.
      */
     void createElements();
-    void layoutElements();
-
-    /*
-     Elements
+    /**
+     * @brief Layout widgets.
      */
+    void layoutElements();
 };
 
 #endif // CHATCONFIGWIDGET_H

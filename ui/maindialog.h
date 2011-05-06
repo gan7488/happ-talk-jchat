@@ -12,7 +12,6 @@
 #include "xmpp/xmppmessaging.h"
 #include "xmpp/xmpproster.h"
 
-
 class QMenu;
 class QTreeWidget;
 class QListWidget;
@@ -24,6 +23,9 @@ class AboutDialog;
 class ConfigDialog;
 class TalksDialog;
 
+/**
+ * @brief Main dialog.
+ */
 class MainDialog : public QDialog
 {
     Q_OBJECT
@@ -31,25 +33,37 @@ public:
     explicit MainDialog(QWidget *parent = 0);
     ~MainDialog();
 
-signals:
-
 public slots:
+    /**
+     * @brief Show or hide dialog.
+     */
     void showhide();
 
 protected:
+    /**
+     * @brief Occurs when the dialog is shown.
+     */
     void showEvent(QShowEvent *e);
+    /**
+     * @brief Occurs when the dialog is closed.
+     */
     void closeEvent(QCloseEvent *e);
 
 private:
+    /*
+     No Comments
+     */
     void createActions();
     void createButtons();
     void createTrayIcon();
-    //void createTree();
     void createUserList();
     void createMenus();
     void createWindows();
     void layoutElements();
 
+    /*
+     Elements
+     */
     AboutDialog     *about;
     ConfigDialog    *config;
     LoginDialog     *login;
@@ -89,27 +103,68 @@ private:
     XMPPRoster      *m_roster;
 
 private slots:
+    /*
+     All handlers (Slots) goes here
+     */
+    /**
+     * @brief addItem action triggered.
+     */
     void addItemTriggered();
+    /**
+     * @brief removeItem action triggered.
+     */
     void removeItemTriggered();
 
+    /**
+     * @brief subscribe action triggered.
+     */
     void subscribeActionTriggered();
+    /**
+     * @brief unsubscribe action triggered.
+     */
     void unsubscribeActionTriggered();
 
+    /**
+     * @brief Update user list.
+     * @param roster Elements to be added to user list.
+     */
     void updateUserList(const Roster &roster);
+    /**
+     * @brief The connection was aborted.
+     * @param e The reason for the disconnection.
+     */
     void disconnected(ConnectionError e);
 
+    /**
+     * @brief Occurs when an item has been added to roster.
+     */
     void itemAdded (const JID &jid);
+    /**
+     * @brief Occurs when an item has been removed from roster.
+     */
     void itemRemoved (const JID &jid);
+    /**
+     * @brief Occurs when an item has been updated in roster.
+     */
     void itemUpdated (const JID &jid);
 
+    /*
+     Subscription
+     */
     void itemSubscribed (const JID &jid);
     void itemUnsubscribed (const JID &jid);
 
+    /*
+     Presence
+     */
+    void selfPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg);
     void rosterPresence (const RosterItem &item, const QString& resource, Presence::PresenceType presence, const QString& msg);
 
+    /*
+     Subscription requests
+     */
     void subscriptionRequest (const JID &jid, const QString& msg);
     void unsubscriptionRequest (const JID &jid, const QString& msg);
-
 
     void rosterRecieved (const Roster &roster);
 
@@ -117,9 +172,7 @@ private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void topClicked();
-    void rightClicked();
     void bottomClicked();
-    void leftClicked();
 
     void beginTalk();
 
@@ -135,7 +188,6 @@ private slots:
     void setOfflineStatus();
 
     void userListClicked(QListWidgetItem * item);
-
 };
 
 #endif // MAINDIALOG_H
