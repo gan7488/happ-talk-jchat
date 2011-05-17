@@ -10,27 +10,30 @@
 
 using namespace gloox;
 
-/*
- Base client extension.
+/**
+ * @brief Base client extension.
  */
 class XMPPClientExtension : public QObject
 {
     Q_OBJECT
 public:
-    /*
-     Desctructor
+    /**
+     * @brief Desctructor
      */
     virtual ~XMPPClientExtension() {}
 
-    /*
-     Register or unregister handlers, and etc.
+    /**
+     * @brief Register handlers, and etc.
      */
     virtual void attachClient(Client *client) = 0;
+    /**
+     * @brief Unregister handlers, and some other functionality.
+     */
     virtual void detachClient(Client *client) = 0;
 
 protected:
-    /*
-     Constructor
+    /**
+     * @brief Constructor
      */
     XMPPClientExtension() {}
 };

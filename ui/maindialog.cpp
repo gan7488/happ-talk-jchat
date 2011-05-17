@@ -60,7 +60,10 @@ void MainDialog::showEvent(QShowEvent *e)
     QDialog::showEvent(e);
 
     if (!m_client || !m_client->authed())
+    {
         login->show();
+        login->setFocus();
+    }
 }
 
 void MainDialog::closeEvent(QCloseEvent *e)
@@ -273,6 +276,9 @@ void MainDialog::loginAccepted()
     connect(m_roster, SIGNAL(itemRemoved(JID)), this, SLOT(itemRemoved(JID)));
     connect(m_roster, SIGNAL(itemUpdated(JID)), this, SLOT(itemUpdated(JID)));
 
+    connect(m_roster, SIGNAL(subscriptionRequest(JID,QString)), this, SLOT(subscriptionRequest(JID,QString)));
+    connect(m_roster, SIGNAL(unsubscriptionRequest(JID,QString)), this, SLOT(unsubscriptionRequest(JID,QString)));
+
     connect(m_roster, SIGNAL(itemSubscribed(JID)), this, SLOT(itemSubscribed(JID)));
     connect(m_roster, SIGNAL(itemUnsubscribed(JID)), this, SLOT(itemUnsubscribed(JID)));
 
@@ -465,8 +471,9 @@ void MainDialog::itemAdded(const JID &jid)
 {
     if (m_client && m_client->authed())
     {
-        updateUserList(*m_client->roster()->roster());
         m_client->roster()->synchronize();
+        updateUserList(*m_client->roster()->roster());
+
     }
     trayIcon->showMessage(tr("User List"), tr("Item %1 added").arg(QString::fromUtf8(jid.full().c_str())));
 }
@@ -475,8 +482,9 @@ void MainDialog::itemRemoved(const JID &jid)
 {
     if (m_client && m_client->authed())
     {
-        updateUserList(*m_client->roster()->roster());
         m_client->roster()->synchronize();
+        updateUserList(*m_client->roster()->roster());
+
     }
     trayIcon->showMessage(tr("User List"), tr("Item %1 removed").arg(QString::fromUtf8(jid.full().c_str())));
 }
@@ -485,8 +493,9 @@ void MainDialog::itemUpdated(const JID &jid)
 {
     if (m_client && m_client->authed())
     {
-        updateUserList(*m_client->roster()->roster());
         m_client->roster()->synchronize();
+        updateUserList(*m_client->roster()->roster());
+
     }
     trayIcon->showMessage(tr("User List"), tr("Item %1 updated").arg(QString::fromUtf8(jid.full().c_str())));
 }
@@ -542,7 +551,7 @@ void MainDialog::subscriptionRequest (const JID &jid, const QString& msg)
 {
     if (!m_client || !m_client->authed()) return;
     if (QMessageBox::question(this, tr("%1 requesting subscriprtion").arg(QString::fromUtf8(jid.bare().c_str())),
-                              msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                              tr("%1 requesting subscriprtion<br>%2").arg(QString::fromUtf8(jid.bare().c_str())).arg(msg), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
         m_client->roster()->ackSubscriptionRequest(jid, true);
     }
@@ -556,7 +565,7 @@ void MainDialog::unsubscriptionRequest (const JID &jid, const QString& msg)
 {
     if (!m_client || !m_client->authed()) return;
     if (QMessageBox::question(this, tr("Unsubscribe %1").arg(QString::fromUtf8(jid.bare().c_str())),
-                              msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                              tr("Unsubscribe %1<br>%2").arg(QString::fromUtf8(jid.bare().c_str())).arg(msg), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
         m_client->roster()->unsubscribe(jid);
     }
@@ -566,14 +575,37 @@ void MainDialog::subscribeActionTriggered()
 {
     if (!m_client || !m_client->authed()) return;
 
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("Subscribe"),
-                                              tr("JID:"), QLineEdit::Normal,
-                                              QString(), &ok);
-    if (ok && !text.isEmpty())
+    if (userList->selectedItems().count() > 0)
     {
-        JID jid(text.toStdString());
-        m_client->roster()->subscribe(jid, jid.username(), StringList(), "Please, authorize me!");
+        foreach(QListWidgetItem *item, userList->selectedItems())
+        {
+            QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
+
+            if (QMessageBox::question(this, tr("Subscribe item %1").arg(nick),
+                                      tr("Subscribe item %1").arg(nick), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+            {
+                JID jid(nick.toStdString());
+                std::list<std::string> groups;
+                groups.push_front(QString("Buddies").toStdString());
+                m_client->roster()->subscribe(jid, jid.username(), groups, "Please, authorize me!");
+                //JID jid(nick.toStdString());
+                //m_client->roster()->unsubscribe(jid);
+            }
+        }
+    }
+    else
+    {
+        bool ok;
+        QString text = QInputDialog::getText(this, tr("Subscribe"),
+                                                  tr("JID:"), QLineEdit::Normal,
+                                                  QString(), &ok);
+        if (ok && !text.isEmpty())
+        {
+            JID jid(text.toStdString());
+            std::list<std::string> groups;
+            groups.push_front(QString("Buddies").toStdString());
+            m_client->roster()->subscribe(jid, jid.username(), groups, "Please, authorize me!");
+        }
     }
 }
 
@@ -581,14 +613,31 @@ void MainDialog::unsubscribeActionTriggered()
 {
     if (!m_client || !m_client->authed()) return;
 
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("Unsubscribe"),
-                                              tr("JID:"), QLineEdit::Normal,
-                                              QString(), &ok);
-    if (ok && !text.isEmpty())
+    if (userList->selectedItems().count() > 0)
     {
-        JID jid(text.toStdString());
-        m_client->roster()->unsubscribe(jid);
+        foreach(QListWidgetItem *item, userList->selectedItems())
+        {
+            QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
+
+            if (QMessageBox::question(this, tr("Unsubscribe item %1").arg(nick),
+                                      tr("Unsubscribe item %1").arg(nick), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+            {
+                JID jid(nick.toStdString());
+                m_client->roster()->unsubscribe(jid);
+            }
+        }
+    }
+    else
+    {
+        bool ok;
+        QString text = QInputDialog::getText(this, tr("Unsubscribe"),
+                                                  tr("JID:"), QLineEdit::Normal,
+                                                  QString(), &ok);
+        if (ok && !text.isEmpty())
+        {
+            JID jid(text.toStdString());
+            m_client->roster()->unsubscribe(jid);
+        }
     }
 }
 
@@ -620,16 +669,31 @@ void MainDialog::removeItemTriggered()
 {
     if (!m_client || !m_client->authed()) return;
 
-    foreach(QListWidgetItem *item, userList->selectedItems())
+    if (userList->selectedItems().count() > 0)
     {
-        QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
-
-        if (QMessageBox::question(this, tr("Remove item %1").arg(nick),
-                                  tr("Remove this item from user list?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        foreach(QListWidgetItem *item, userList->selectedItems())
         {
-            m_client->roster()->remove(JID(nick.toStdString()));
-            //JID jid(nick.toStdString());
-            //m_client->roster()->unsubscribe(jid);
+            QString nick = qvariant_cast<QString>(item->data(UserItem::userJID));
+
+            if (QMessageBox::question(this, tr("Remove item %1").arg(nick),
+                                      tr("Remove this item from user list?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+            {
+                m_client->roster()->remove(JID(nick.toStdString()));
+                //JID jid(nick.toStdString());
+                //m_client->roster()->unsubscribe(jid);
+            }
+        }
+    }
+    else
+    {
+        bool ok;
+        QString text = QInputDialog::getText(this, tr("Remove item"),
+                                                  tr("JID:"), QLineEdit::Normal,
+                                                  QString(), &ok);
+        if (ok && !text.isEmpty())
+        {
+            JID jid(text.toStdString());
+            m_client->roster()->remove(jid);
         }
     }
 }
