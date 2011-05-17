@@ -19,8 +19,8 @@
 
 using namespace gloox;
 
-/*
- This class implements simple messaging
+/**
+ * @brief This class implements simple messaging
  */
 class XMPPMessaging : public XMPPClientExtension,
                              MessageHandler,
@@ -43,49 +43,75 @@ public:
     XMPPMessaging();
     virtual ~XMPPMessaging();
 
-    /*
-     Attach and detach client
+    /**
+     * @brief Register handlers, and etc.
      */
     virtual void attachClient(Client *client);
+    /**
+     * @brief Unregister handlers, and some other functionality.
+     */
     virtual void detachClient(Client *client);
 
-    /*
-     Begin or end messaging session
+    /**
+     * @brief Begin messaging session.
      */
     void beginChat(const JID& target);
+    /**
+     * @brief End messaging session.
+     */
     void endChat(const JID& target);
 
 signals:
-    /*
-     Something changed or recieved
+    /**
+     * @brief Message was recieved
      */
     void chatMessageRecieved(const JID& from, const QString& msg);
+    /**
+     * @brief Status messages have changed.
+     * @param event New event type.
+     */
     void chatMessageChanged(const JID& from, MessageEventType event);
+    /**
+     * @brief Chat state have changed.
+     * @param state New chat state.
+     */
     void chatStateChanged(const JID& from, ChatStateType state);
 
 public slots:
-    /*
-     Send something or change smth.
+    /**
+     * @brief Send message.
      */
     void sendChatMessage(const JID& to, const QString& msg);
+    /**
+     * @brief Change message status.
+     * @param event New event type.
+     */
     void changeMessageEvent(const JID& to, MessageEventType event);
+    /**
+     * @brief Change chat state.
+     * @param state New chat state.
+     */
     void changeChatState(const JID& to, ChatStateType state);
 
 protected:
-    /*
-     Overrides of MessageHandler
+    /**
+     * @brief Overrides of gloox::MessageHandler
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
      */
     virtual void handleMessage (const Message &msg, MessageSession *session=0);
-    /*
-     Overrides of MessageSessionHandler
+    /**
+     * @brief Overrides of gloox::MessageSessionHandler
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
      */
     virtual void handleMessageSession (MessageSession *session);
-    /*
-     Overrides of MessageEventHandler
+    /**
+     * @brief Overrides of gloox::MessageEventHandler
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
      */
     virtual void handleMessageEvent (const JID &from, MessageEventType event);
-    /*
-     Overrides of ChatStatehadler
+    /**
+     * @brief Overrides of gloox::ChatStatehadler
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
      */
     virtual void handleChatState (const JID &from, ChatStateType state);
 

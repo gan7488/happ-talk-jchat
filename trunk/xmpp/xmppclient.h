@@ -14,83 +14,111 @@
 
 using namespace gloox;
 
-/*
- This class implements connection functions.
- How to use:
-    1) call connect()
-    2) working
-    3) call disconnect()
+/**
+ * @brief This class implements connection functions.
+ * @example How to use:
+ *   1) call connect()
+ *   2) working
+ *   3) call disconnect()
  */
 class XMPPClient : public QObject,
                           ConnectionListener
 {
     Q_OBJECT
 public:
-    /*
-     Constructors and destructor.
+    /**
+     * @brief Create new instance of XMPP client
      */
     XMPPClient(const JID& jid, const QString& password, int port = -1);
+    /**
+     * @brief Create new instance of XMPP client
+     * @param server Server name or ip.
+     */
     XMPPClient(const QString& server);
     virtual ~XMPPClient(void);
 
-    /*
-     Connection functions.
+    /**
+     * @brief Connect to server
      */
     void connect(void);
+    /**
+     * @brief Disconnect from the server
+     */
     void disconnect(void);
 
-    /*
-     Connection status.
+    /**
+     * @brief Determines whether or not authorized
      */
     bool authed() const;
+    /**
+     * @brief Get connection state
+     */
     ConnectionState state() const;
 
-    /*
-     Attach or detach client extensions.
+    /**
+     * @brief Attach to client an extensions.
      */
     void attach(XMPPClientExtension* ext);
+    /**
+     * @brief Detach to client an extensions.
+     */
     void detach(XMPPClientExtension* ext);
     void operator+=(XMPPClientExtension *ext) { attach(ext); }
     void operator-=(XMPPClientExtension *ext) { detach(ext); }
 
-    /*
-     Proxies settings goes here.
+    /**
+     * @brief Set up a http proxy.
      */
     void setHTTPProxy(const QString& host, int port, const QString& user, const QString& pass);
+    /**
+     * @brief Set up a socks5 proxy
+     */
     void setSOCKS5Proxy(const QString& host, int port, const QString& user, const QString& pass);
 
-    /*
-     Roster manager
+    /**
+     * @brief Roster manager
      */
     RosterManager* roster() const { return m_client->rosterManager(); }
 
-    /*
-     Presence
+    /**
+     * @brief Set your online status (available, away or more)
      */
     void setPresence (Presence::PresenceType pres) { m_client->setPresence(pres, 0); }
 signals:
-    /*
-     Occurs when connection established.
+    /**
+     * @brief Signal is raised when a connection was established.
      */
     void connected();
-    /*
-     Occurs when connection was disconnected.
+    /**
+     * @brief Signal is raised when the connection was aborted.
      */
     void disconnected(ConnectionError e);
 
 protected:
-    /*
-     Overrides of gloox::ConnectionListener
+    /**
+     * @brief Overrides of gloox::ConnectionListener
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
      */
     virtual void onConnect();
+    /**
+     * @brief Overrides of gloox::ConnectionListener
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
+     */
     virtual void onDisconnect( ConnectionError e );
+    /**
+     * @brief Overrides of gloox::ConnectionListener
+     * Go to the gloox documentation: http://camaya.net/api/gloox-1.0/index.html
+     */
     virtual bool onTLSConnect( const CertInfo& info );
 
 private:
-    /*
-     Top Secret!
+    /**
+     * @brief Receive packets on a timer.
      */
     void timerEvent(QTimerEvent */*event*/) { m_client->recv(0); }
+    /**
+     * @brief Configuration information about the xmpp client.
+     */
     inline void setInfo();
 
 protected:

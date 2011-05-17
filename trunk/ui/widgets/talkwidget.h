@@ -26,6 +26,7 @@ public:
 
     /**
      * @brief Set companion.
+     * @param target Companions JID.
      */
     void setTarget(const JID &target) { m_jid = target; }
     /**
@@ -36,12 +37,15 @@ public:
 signals:
     /**
      * @brief Send message.
+     * @param target For whom the message is intended.
+     * @param msg Message to send.
      */
     void sendMessage(const JID& target, const QString &msg);
 
 public slots:
     /**
      * @brief Message recieved from @ref target();
+     * @param msg Recieved message.
      */
     void messageReceived(const QString &msg);
 

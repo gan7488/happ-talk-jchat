@@ -31,6 +31,8 @@ public:
 public slots:
     /**
      * @brief Occures when message was recieved.
+     * @param from Message was recieved from this jid
+     * @param msg Recieved message.
      */
     void messageRecieved(const JID &from, const QString &msg);
 
@@ -43,10 +45,12 @@ private slots:
 protected:
     /**
      * @brief Occurs when the dialog is shown.
+     * @param e Event arguments
      */
     void showEvent(QShowEvent *e);
     /**
      * @brief Occurs when the dialog is closed.
+     * @param e Event arguments
      */
     void closeEvent(QCloseEvent *e);
 

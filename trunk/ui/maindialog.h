@@ -42,10 +42,12 @@ public slots:
 protected:
     /**
      * @brief Occurs when the dialog is shown.
+     * @param e Event arguments.
      */
     void showEvent(QShowEvent *e);
     /**
      * @brief Occurs when the dialog is closed.
+     * @param e Event arguments.
      */
     void closeEvent(QCloseEvent *e);
 
@@ -137,21 +139,29 @@ private slots:
 
     /**
      * @brief Occurs when an item has been added to roster.
+     * @param jid JID of the added item.
      */
     void itemAdded (const JID &jid);
     /**
      * @brief Occurs when an item has been removed from roster.
+     * @param jid JID of the removed item.
      */
     void itemRemoved (const JID &jid);
     /**
      * @brief Occurs when an item has been updated in roster.
+     * @param jid JID of the updated item.
      */
     void itemUpdated (const JID &jid);
 
-    /*
-     Subscription
+    /**
+     * @brief Occurs when item was subscribed
+     * @param jid JID of the subscribed item.
      */
     void itemSubscribed (const JID &jid);
+    /**
+     * @brief Occurs when item was unsubscribed.
+     * @param jid JID of the unsubscribed item.
+     */
     void itemUnsubscribed (const JID &jid);
 
     /*
